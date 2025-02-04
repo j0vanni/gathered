@@ -1,5 +1,5 @@
 import React from "react";
-import "./App.css";
+import "globals.css";
 
 function App() {
   return <></>;
