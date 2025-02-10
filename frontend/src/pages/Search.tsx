@@ -24,9 +24,19 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Progress } from "@/components/ui/progress";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
-
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+import { NumericFormat } from "react-number-format";
 import MockRes from "./MockRes";
-import { Results } from "../types/Searchtype";
+import MockTV from "./MockTV";
+import { Results } from "../types/SearchType";
+import TVType from "@/types/TVType";
+import MovieType from "@/types/MovieType";
+import MockMovie from "./MockMovie";
 //<Progress value={percentage} />
 
 type Props = {};
@@ -45,6 +55,7 @@ can search by:
 
 user drawer component when user clicks on show
 */
+const list_holder = ["list1", "list2", "list3"];
 
 const image = "https://image.tmdb.org/t/p/original";
 
@@ -112,6 +123,122 @@ function ShowItem(data: Results) {
   );
 }
 
+function TVAlert(item: TVType) {
+  return (
+    <AlertDialogContent>
+      <AlertDialogHeader>
+        <AlertDialogTitle>
+          <div className="flex flex-row">
+            <p className="uppercase">{MockTV.name}</p>
+            <p className="ml-auto text-xs text-black/50">{MockTV.status}</p>
+          </div>
+        </AlertDialogTitle>
+        <AlertDialogDescription>
+          <div className="flex flex-row gap-x-1">
+            {MockTV.genres.map((item, index) => {
+              return (
+                <div className="bg-foreground text-background rounded-md p-1 text-xs">
+                  {item.name}
+                </div>
+              );
+            })}
+          </div>
+          <Accordion type="single" collapsible>
+            <AccordionItem value="seasons">
+              <AccordionTrigger>
+                {MockTV.number_of_seasons} Seasons
+              </AccordionTrigger>
+              {MockTV.seasons.map((item, index) => (
+                <AccordionContent>
+                  <div className="flex flex-row">
+                    {item.season_number}: {item.name} {" - "}
+                    {item.episode_count} episodes
+                    <p className="ml-auto">{item.air_date?.slice(0, 4)}</p>
+                  </div>
+                </AccordionContent>
+              ))}
+            </AccordionItem>
+          </Accordion>
+        </AlertDialogDescription>
+      </AlertDialogHeader>
+      <AlertDialogFooter>
+        <Select>
+          <SelectTrigger className="w-48 mr-auto">
+            <SelectValue placeholder="Choose a List" />
+          </SelectTrigger>
+          <SelectContent>
+            {list_holder.map((item, index) => {
+              return <SelectItem value={item}>{item}</SelectItem>;
+            })}
+          </SelectContent>
+        </Select>
+        <AlertDialogCancel>Cancel</AlertDialogCancel>
+        <AlertDialogAction>Add to List</AlertDialogAction>
+      </AlertDialogFooter>
+    </AlertDialogContent>
+  );
+}
+
+function MovieAlert(item: MovieType) {
+  return (
+    <AlertDialogContent>
+      <AlertDialogHeader>
+        <AlertDialogTitle>
+          <div className="flex flex-row">
+            <p className="uppercase">{MockMovie.title}</p>
+            <p className="ml-1 text-xs mt-2 text-black/50">
+              {MockMovie.runtime} minutes
+            </p>
+            <p className="ml-auto text-xs text-black/50">
+              {MockMovie.status} {MockMovie.release_date.slice(0, 4)}
+            </p>
+          </div>
+        </AlertDialogTitle>
+        <AlertDialogDescription>
+          <div className="flex flex-row gap-x-1">
+            {MockMovie.genres.map((item, index) => {
+              return (
+                <div className="bg-foreground text-background rounded-md p-1 text-xs">
+                  {item.name}
+                </div>
+              );
+            })}
+          </div>
+          <div className="flex flex-row mt-2">
+            <NumericFormat
+              value={MockMovie.budget}
+              thousandSeparator=","
+              className="bg-background mr-auto"
+              prefix="bud. "
+            />
+            <NumericFormat
+              value={MockMovie.revenue}
+              thousandSeparator=","
+              className="bg-background ml-auto text-right"
+              prefix="rev. "
+            />
+          </div>
+          <p className="my-2">{MockMovie.overview}</p>
+        </AlertDialogDescription>
+      </AlertDialogHeader>
+      <AlertDialogFooter>
+        <Select>
+          <SelectTrigger className="w-48 mr-auto">
+            <SelectValue placeholder="Choose a List" />
+          </SelectTrigger>
+          <SelectContent>
+            {list_holder.map((item, index) => {
+              return <SelectItem value={item}>{item}</SelectItem>;
+            })}
+          </SelectContent>
+        </Select>
+        <AlertDialogCancel>Cancel</AlertDialogCancel>
+        <AlertDialogAction>Add to List</AlertDialogAction>
+      </AlertDialogFooter>
+    </AlertDialogContent>
+  );
+}
+
 function SearchBar({ className = "" }: { className?: string }) {
   return (
     <div
@@ -141,7 +268,16 @@ function Search({}: Props) {
         <div className="flex flex-col align-middle items-center select-none">
           {show_items.results.map((item, _index) => (
             <div className="w-11/12">
-              <ShowItem {...item} key={_index} />
+              <AlertDialog>
+                <AlertDialogTrigger className="w-[100%] text-left">
+                  <ShowItem {...item} key={_index} />
+                </AlertDialogTrigger>
+                {item.media_type === "tv" ? (
+                  <TVAlert {...item} />
+                ) : (
+                  <MovieAlert {...item} />
+                )}
+              </AlertDialog>
             </div>
           ))}
         </div>
