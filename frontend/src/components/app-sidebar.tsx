@@ -16,14 +16,9 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { ChevronUp, User2 } from "lucide-react";
-import { Home, ScrollText, Search } from "lucide-react";
+import { ScrollText, Search } from "lucide-react";
 
 const items = [
-  {
-    title: "Home",
-    url: "/",
-    icon: Home,
-  },
   {
     title: "Lists",
     url: "/lists",
