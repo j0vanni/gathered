@@ -17,12 +17,12 @@ export default interface TVType {
   last_air_date: string;
   last_episode_to_air: Episode;
   name: string;
-  next_episode_to_air: Episode;
+  next_episode_to_air: Episode | null;
   networks: Networks[];
   number_of_episodes: number;
   number_of_seasons: number;
   origin_country: string[];
-  orignial_language: string;
+  original_language: string;
   original_name: string;
   overview: string;
   popularity: number;
@@ -62,7 +62,7 @@ interface Networks {
 }
 
 interface Season {
-  air_date: string;
+  air_date: string | null;
   episode_count: number;
   id: number;
   name: string;

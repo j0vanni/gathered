@@ -1,11 +1,3 @@
-import React, { useState } from "react";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -17,26 +9,63 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { useState } from "react";
 import ReactCountryFlag from "react-country-flag";
-
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
-import { Progress } from "@/components/ui/progress";
-import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { Input } from "@/components/ui/input";
+import { Separator } from "@/components/ui/separator";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import MovieType from "@/types/MovieType";
+import TVType from "@/types/TVType";
 import { NumericFormat } from "react-number-format";
+import { Results } from "../types/SearchType";
+import MockMovie from "./MockMovie";
 import MockRes from "./MockRes";
 import MockTV from "./MockTV";
-import { Results } from "../types/SearchType";
-import TVType from "@/types/TVType";
-import MovieType from "@/types/MovieType";
-import MockMovie from "./MockMovie";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import {
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@/components/ui/drawer";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { DialogClose } from "@radix-ui/react-dialog";
+import { Button } from "@/components/ui/button";
+
 //<Progress value={percentage} />
 
 type Props = {};
@@ -124,16 +153,19 @@ function ShowItem(data: Results) {
 }
 
 function TVAlert(item: TVType) {
-  return (
-    <AlertDialogContent>
-      <AlertDialogHeader>
-        <AlertDialogTitle>
+  const isMobile = useIsMobile();
+  const [open, setOpen] = useState(false);
+
+  if (isMobile) {
+    return (
+      <DrawerHeader>
+        <DrawerTitle>
           <div className="flex flex-row">
             <p className="uppercase">{MockTV.name}</p>
             <p className="ml-auto text-xs text-black/50">{MockTV.status}</p>
           </div>
-        </AlertDialogTitle>
-        <AlertDialogDescription>
+        </DrawerTitle>
+        <DrawerDescription>
           <div className="flex flex-row gap-x-1">
             {MockTV.genres.map((item, index) => {
               return (
@@ -143,6 +175,7 @@ function TVAlert(item: TVType) {
               );
             })}
           </div>
+          <p className="mt-2">{item.overview}</p>
           <Accordion type="single" collapsible>
             <AccordionItem value="seasons">
               <AccordionTrigger>
@@ -159,31 +192,58 @@ function TVAlert(item: TVType) {
               ))}
             </AccordionItem>
           </Accordion>
-        </AlertDialogDescription>
-      </AlertDialogHeader>
-      <AlertDialogFooter>
-        <Select>
-          <SelectTrigger className="w-48 mr-auto">
-            <SelectValue placeholder="Choose a List" />
-          </SelectTrigger>
-          <SelectContent>
-            {list_holder.map((item, index) => {
-              return <SelectItem value={item}>{item}</SelectItem>;
+        </DrawerDescription>
+      </DrawerHeader>
+    );
+  } else {
+    return (
+      <DialogHeader>
+        <DialogTitle>
+          <div className="flex flex-row">
+            <p className="uppercase">{MockTV.name}</p>
+            <p className="ml-auto text-xs text-black/50">{MockTV.status}</p>
+          </div>
+        </DialogTitle>
+        <DialogDescription>
+          <div className="flex flex-row gap-x-1">
+            {MockTV.genres.map((item, index) => {
+              return (
+                <div className="bg-foreground text-background rounded-md p-1 text-xs">
+                  {item.name}
+                </div>
+              );
             })}
-          </SelectContent>
-        </Select>
-        <AlertDialogCancel>Cancel</AlertDialogCancel>
-        <AlertDialogAction>Add to List</AlertDialogAction>
-      </AlertDialogFooter>
-    </AlertDialogContent>
-  );
+          </div>
+          <p className="mt-2">{item.overview}</p>
+          <Accordion type="single" collapsible>
+            <AccordionItem value="seasons">
+              <AccordionTrigger>
+                {MockTV.number_of_seasons} Seasons
+              </AccordionTrigger>
+              {MockTV.seasons.map((item, index) => (
+                <AccordionContent>
+                  <div className="flex flex-row">
+                    {item.season_number}: {item.name} {" - "}
+                    {item.episode_count} episodes
+                    <p className="ml-auto">{item.air_date?.slice(0, 4)}</p>
+                  </div>
+                </AccordionContent>
+              ))}
+            </AccordionItem>
+          </Accordion>
+        </DialogDescription>
+      </DialogHeader>
+    );
+  }
 }
 
 function MovieAlert(item: MovieType) {
-  return (
-    <AlertDialogContent>
-      <AlertDialogHeader>
-        <AlertDialogTitle>
+  const isMobile = useIsMobile();
+
+  if (isMobile) {
+    return (
+      <DrawerHeader>
+        <DrawerTitle>
           <div className="flex flex-row">
             <p className="uppercase">{MockMovie.title}</p>
             <p className="ml-1 text-xs mt-2 text-black/50">
@@ -193,8 +253,52 @@ function MovieAlert(item: MovieType) {
               {MockMovie.status} {MockMovie.release_date.slice(0, 4)}
             </p>
           </div>
-        </AlertDialogTitle>
-        <AlertDialogDescription>
+        </DrawerTitle>
+        <DrawerDescription>
+          <div className="flex flex-row gap-x-1">
+            {MockMovie.genres.map((item, index) => {
+              return (
+                <div className="bg-foreground text-background rounded-md p-1 text-xs">
+                  {item.name}
+                </div>
+              );
+            })}
+          </div>
+          <div className="flex flex-row mt-2">
+            <NumericFormat
+              value={MockMovie.budget}
+              thousandSeparator=","
+              className="bg-background mr-auto select-none"
+              prefix="bud. "
+              displayType="text"
+            />
+            <NumericFormat
+              value={MockMovie.revenue}
+              thousandSeparator=","
+              className="bg-background ml-auto text-right select-none"
+              prefix="rev. "
+              displayType="text"
+            />
+          </div>
+          <p className="my-2 text-left">{MockMovie.overview}</p>
+        </DrawerDescription>
+      </DrawerHeader>
+    );
+  } else {
+    return (
+      <DialogHeader>
+        <DialogTitle>
+          <div className="flex flex-row">
+            <p className="uppercase">{MockMovie.title}</p>
+            <p className="ml-1 text-xs mt-2 text-black/50">
+              {MockMovie.runtime} minutes
+            </p>
+            <p className="ml-auto text-xs text-black/50">
+              {MockMovie.status} {MockMovie.release_date.slice(0, 4)}
+            </p>
+          </div>
+        </DialogTitle>
+        <DrawerDescription>
           <div className="flex flex-row gap-x-1">
             {MockMovie.genres.map((item, index) => {
               return (
@@ -210,46 +314,40 @@ function MovieAlert(item: MovieType) {
               thousandSeparator=","
               className="bg-background mr-auto"
               prefix="bud. "
+              displayType="text"
             />
             <NumericFormat
               value={MockMovie.revenue}
               thousandSeparator=","
-              className="bg-background ml-auto text-right"
+              className="bg-background ml-auto text-right select-none"
               prefix="rev. "
+              displayType="text"
             />
           </div>
-          <p className="my-2">{MockMovie.overview}</p>
-        </AlertDialogDescription>
-      </AlertDialogHeader>
-      <AlertDialogFooter>
-        <Select>
-          <SelectTrigger className="w-48 mr-auto">
-            <SelectValue placeholder="Choose a List" />
-          </SelectTrigger>
-          <SelectContent>
-            {list_holder.map((item, index) => {
-              return <SelectItem value={item}>{item}</SelectItem>;
-            })}
-          </SelectContent>
-        </Select>
-        <AlertDialogCancel>Cancel</AlertDialogCancel>
-        <AlertDialogAction>Add to List</AlertDialogAction>
-      </AlertDialogFooter>
-    </AlertDialogContent>
-  );
+          <p className="my-2 text-left">{MockMovie.overview}</p>
+        </DrawerDescription>
+      </DialogHeader>
+    );
+  }
 }
 
 function SearchBar({ className = "" }: { className?: string }) {
+  const [searchItems, setToggleSearchItems] = useState("multi");
   return (
     <div
-      className={`flex flex-col flex-1 justify-center items-center pt-4 ${className}`}
+      className={`flex flex-col flex-1 justify-center items-center p-4 ${className}`}
     >
       <div className="flex flex-row w-full max-w-4xl px-4 sm:px-6 mx-auto gap-3">
         <Input
           className="w-full"
           placeholder="Search for movies or TV shows.."
         />
-        <ToggleGroup type="single">
+        <ToggleGroup
+          type="single"
+          onValueChange={setToggleSearchItems}
+          defaultChecked
+          defaultValue="multi"
+        >
           <ToggleGroupItem value="multi">All</ToggleGroupItem>
           <ToggleGroupItem value="tv">TV</ToggleGroupItem>
           <ToggleGroupItem value="movie">Mov</ToggleGroupItem>
@@ -260,6 +358,75 @@ function SearchBar({ className = "" }: { className?: string }) {
   );
 }
 
+function SearchItem({ item }: { item: Results }) {
+  const isMobile = useIsMobile();
+  const [open, setOpen] = useState(false);
+
+  if (isMobile) {
+    return (
+      <Drawer open={open} onOpenChange={setOpen}>
+        <DrawerTrigger className="w-full text-left">
+          <ShowItem {...item} />
+        </DrawerTrigger>
+        <DrawerContent className="w-full rounded-md">
+          {item.media_type === "movie" ? (
+            <TVAlert {...item} />
+          ) : (
+            <MovieAlert {...item} />
+          )}
+          <DrawerFooter className="flex flex-row items-center gap-1">
+            <Select>
+              <SelectTrigger className="w-42 mr-auto">
+                <SelectValue placeholder="Choose a List" />
+              </SelectTrigger>
+              <SelectContent>
+                {list_holder.map((item, index) => {
+                  return <SelectItem value={item}>{item}</SelectItem>;
+                })}
+              </SelectContent>
+            </Select>
+            <DrawerClose>
+              <Button variant="outline">Cancel</Button>
+            </DrawerClose>
+            <Button>Add to List</Button>
+          </DrawerFooter>
+        </DrawerContent>
+      </Drawer>
+    );
+  } else {
+    return (
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogTrigger className="w-full text-left">
+          <ShowItem {...item} />
+        </DialogTrigger>
+        <DialogContent className="w-full rounded-md [&>button]:hidden">
+          {item.media_type === "movie" ? (
+            <TVAlert {...item} />
+          ) : (
+            <MovieAlert {...item} />
+          )}
+          <DialogFooter className="flex flex-row items-center gap-1">
+            <Select>
+              <SelectTrigger className="w-42 mr-auto">
+                <SelectValue placeholder="Choose a List" />
+              </SelectTrigger>
+              <SelectContent>
+                {list_holder.map((item, index) => {
+                  return <SelectItem value={item}>{item}</SelectItem>;
+                })}
+              </SelectContent>
+            </Select>
+            <DialogClose>
+              <Button variant="outline">Cancel</Button>
+            </DialogClose>
+            <Button>Add to List</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    );
+  }
+}
+
 function Search({}: Props) {
   return (
     <>
@@ -268,21 +435,29 @@ function Search({}: Props) {
         <div className="flex flex-col align-middle items-center select-none">
           {show_items.results.map((item, _index) => (
             <div className="w-11/12">
-              <AlertDialog>
-                <AlertDialogTrigger className="w-[100%] text-left">
-                  <ShowItem {...item} key={_index} />
-                </AlertDialogTrigger>
-                {item.media_type === "tv" ? (
-                  <TVAlert {...item} />
-                ) : (
-                  <MovieAlert {...item} />
-                )}
-              </AlertDialog>
+              <SearchItem item={item}>{item}</SearchItem>
             </div>
           ))}
         </div>
       </div>
-      <div className="w-full max-w-4xl sm:px-6 px-4 mx-auto flex flex-col gap-y-4"></div>
+      <div className="w-full max-w-4xl sm:px-6 px-4 mx-auto flex flex-col gap-y-4">
+        <Pagination>
+          <PaginationContent>
+            <PaginationItem>
+              <PaginationPrevious href="#" />
+            </PaginationItem>
+            <PaginationItem>
+              <PaginationLink href="#">1</PaginationLink>
+            </PaginationItem>
+            <PaginationItem>
+              <PaginationEllipsis />
+            </PaginationItem>
+            <PaginationItem>
+              <PaginationNext href="#" />
+            </PaginationItem>
+          </PaginationContent>
+        </Pagination>
+      </div>
     </>
   );
 }

@@ -1,6 +1,6 @@
 export interface Production {
   id: number;
-  logo_path: string;
+  logo_path: string | null;
   name: string;
-  original_country: string;
+  origin_country: string;
 }
