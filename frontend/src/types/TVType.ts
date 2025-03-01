@@ -34,6 +34,10 @@ export default interface TVType {
   status: string;
   tagline: string;
   type: string;
+  watching?: {
+    season: number;
+    episode: number;
+  };
   vote_average: number;
   vote_count: number;
 }

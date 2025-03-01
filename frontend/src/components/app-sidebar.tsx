@@ -17,6 +17,9 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { ChevronUp, User2 } from "lucide-react";
 import { ScrollText, Search } from "lucide-react";
+import { Link } from "react-router";
+import axios from "axios";
+import api from "@/globals";
 
 const items = [
   {
@@ -32,11 +35,19 @@ const items = [
 ];
 
 export function AppSidebar() {
+  const handleSignOut = async () => {
+    await axios.get(api + "/auth/signout", {
+      withCredentials: true,
+    });
+
+    window.location.href = "/";
+  };
+
   return (
     <Sidebar>
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel>App</SidebarGroupLabel>
+          <SidebarGroupLabel>Gathered</SidebarGroupLabel>
         </SidebarGroup>
         <SidebarGroupContent>
           <SidebarMenu>
@@ -67,10 +78,12 @@ export function AppSidebar() {
                 side="top"
                 className="w-[--radix-popper-anchor-width]"
               >
-                <DropdownMenuItem>
-                  <span>Account</span>
+                <DropdownMenuItem asChild>
+                  <Link to="/account">
+                    <span>Account</span>
+                  </Link>
                 </DropdownMenuItem>
-                <DropdownMenuItem>
+                <DropdownMenuItem onClick={handleSignOut}>
                   <span>Sign out</span>
                 </DropdownMenuItem>
               </DropdownMenuContent>
