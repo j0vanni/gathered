@@ -1,14 +1,10 @@
-import React from "react";
-import "./index.css";
-import { SidebarProvider, SidebarTrigger } from "./components/ui/sidebar";
-import { AppSidebar } from "./components/app-sidebar";
-import Layout from "./layout";
 import { Route, Routes } from "react-router";
-import Search from "./pages/Search";
-import Lists from "./pages/Lists";
+import "./index.css";
+import Layout from "./layout";
 import Account from "./pages/Account";
+import Lists from "./pages/Lists";
 import Login from "./pages/Login";
-import { useLocation } from "react-router";
+import Search from "./pages/Search";
 import { useTheme } from "./useTheme";
 
 function App() {

@@ -6,11 +6,10 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { useEffect, useState } from "react";
-import { Navigate } from "react-router";
 import api from "@/globals";
 import axios from "axios";
-import { useTheme } from "@/useTheme";
+import { useEffect, useState } from "react";
+import { Navigate } from "react-router";
 
 function Login() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);

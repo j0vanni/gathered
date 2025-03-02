@@ -1,45 +1,10 @@
 import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { useEffect, useState } from "react";
-import ReactCountryFlag from "react-country-flag";
-import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { Input } from "@/components/ui/input";
-import { Separator } from "@/components/ui/separator";
-import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
-import MovieType from "@/types/MovieType";
-import TVType from "@/types/TVType";
-import { NumericFormat } from "react-number-format";
-import { ResultsShow, ResultsMovie } from "../types/SearchType";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationEllipsis,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "@/components/ui/pagination";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -59,12 +24,35 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer";
-import { useIsMobile } from "@/hooks/use-mobile";
-import { DialogClose } from "@radix-ui/react-dialog";
-import { Button } from "@/components/ui/button";
-import axios from "axios";
+import { Input } from "@/components/ui/input";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Separator } from "@/components/ui/separator";
 import api from "@/globals";
+import { useIsMobile } from "@/hooks/use-mobile";
+import MovieType from "@/types/MovieType";
+import TVType from "@/types/TVType";
+import { DialogClose } from "@radix-ui/react-dialog";
+import axios from "axios";
+import { useEffect, useState } from "react";
+import ReactCountryFlag from "react-country-flag";
+import { NumericFormat } from "react-number-format";
 import { toast } from "sonner";
+import { ResultsMovie, ResultsShow } from "../types/SearchType";
 import List from "./Lists";
 
 //<Progress value={percentage} />
@@ -84,21 +72,14 @@ can search by:
 
 user drawer component when user clicks on show
 */
-const list_holder = ["list1", "list2", "list3"];
 
 function ShowItem(data: ResultsShow) {
   const {
-    backdrop_path,
-    id,
     name,
     original_name,
     overview,
     poster_path,
     media_type,
-    adult,
-    original_language,
-    genre_ids,
-    popularity,
     first_air_date,
     vote_average,
     origin_country,
@@ -147,21 +128,13 @@ function ShowItem(data: ResultsShow) {
 
 function MovieItem(item: ResultsMovie) {
   const {
-    backdrop_path,
-    id,
     title,
     original_title,
     overview,
     poster_path,
     media_type,
-    adult,
-    original_language,
-    genre_ids,
-    popularity,
     release_date,
-    video,
     vote_average,
-    vote_count,
   }: ResultsMovie = item;
   const movie_year = release_date ? release_date.slice(0, 4) : "";
 
@@ -196,9 +169,8 @@ function MovieItem(item: ResultsMovie) {
   );
 }
 
-function TVAlert(item: TVType) {
+function TVAlert(item: any) {
   const isMobile = useIsMobile();
-  const [open, setOpen] = useState(false);
   const [tvDetails, setTvDetails] = useState<TVType | null>(null);
 
   useEffect(() => {
@@ -299,7 +271,7 @@ function TVAlert(item: TVType) {
   }
 }
 
-function MovieAlert(item: MovieType) {
+function MovieAlert(item: any) {
   const isMobile = useIsMobile();
   const [movieDetails, setMovieDetails] = useState<MovieType | null>(null);
 
@@ -481,7 +453,7 @@ function SearchItem({
 }: {
   item: ResultsShow | ResultsMovie;
   lists: {
-    items: { itemid: TVType[] | MovieType[] };
+    items: (MovieType | TVType)[];
     name: string;
     listId: string;
     users: { email: string; id: string; name: string; photo: string }[];
@@ -608,7 +580,7 @@ function Search({}: Props) {
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [query, setQuery] = useState("");
-  const [searchToggle, setSearchToggle] = useState("all");
+  const [searchToggle] = useState("all");
   const [lists, setLists] = useState<List[]>([]);
 
   useEffect(() => {
@@ -731,7 +703,7 @@ function Search({}: Props) {
                     item={item}
                     lists={lists}
                     onAddToList={handleAddToList}
-                  ></SearchItem>
+                  />
                 </div>
               ))}
             </>

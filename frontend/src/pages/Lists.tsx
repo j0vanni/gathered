@@ -1,11 +1,15 @@
-import { Input } from "@/components/ui/input";
-import { Separator } from "@/components/ui/separator";
-import MockMovie from "./MockMovie";
-import MockTV from "./MockTV";
-import MovieType from "../types/MovieType";
-import { useState, useEffect, useRef } from "react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import TVType from "../types/TVType";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import {
   Drawer,
   DrawerClose,
@@ -17,49 +21,22 @@ import {
   DrawerTrigger,
 } from "@/components/ui/drawer";
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-  DialogClose,
-} from "@/components/ui/dialog";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
-import { useIsMobile } from "@/hooks/use-mobile";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
-import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { ChevronDownIcon, ChevronUpIcon, PlusIcon } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
+import { Separator } from "@/components/ui/separator";
 import api from "@/globals";
+import { useIsMobile } from "@/hooks/use-mobile";
 import axios from "axios";
+import { ChevronDownIcon, ChevronUpIcon } from "lucide-react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { createPortal } from "react-dom";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
-import { checkLoggedIn } from "@/checkLoggedIn";
+import MovieType from "../types/MovieType";
+import TVType from "../types/TVType";
 
 type Props = {};
 
@@ -288,9 +265,8 @@ function ListTitle({
   const isMobile = useIsMobile();
   const [open, setOpen] = useState(false);
   const [name, setName] = useState(title);
-  const [email, setEmail] = useState("");
   const [listTitle, setListTitle] = useState(title);
-  const [addUserOpen, setAddUserOpen] = useState(false);
+  const [, setAddUserOpen] = useState(false);
   const [addUserEmail, setAddUserEmail] = useState("");
   const handleCancel = () => {
     setName(title);
@@ -519,11 +495,7 @@ function List({}: Props) {
   const [newListName, setNewListName] = useState("");
   const [listOpen, setListOpen] = useState(false);
   const [lists, setLists] = useState<List[]>([]);
-  const [user, setUser] = useState<User | null>(null);
   const [openStates, setOpenStates] = useState<Record<number, boolean>>({});
-
-  const [addUserOpen, setAddUserOpen] = useState(false);
-  const [addUserEmail, setAddUserEmail] = useState("");
 
   useEffect(() => {
     const checkLogin = async () => {
@@ -704,7 +676,7 @@ function List({}: Props) {
               <div className="flex w-full">
                 <div className="flex flex-row gap-4 flex-wrap content-center justify-center align-center">
                   {isOpen &&
-                    Object.entries(list.items).map(([id, item]) => {
+                    Object.entries(list.items).map(([_id, item]) => {
                       return "seasons" in item ? (
                         <ShowBox
                           item={item as TVType}
