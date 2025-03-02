@@ -5,6 +5,7 @@ const passport = require("passport");
 require("./config/passport")(passport);
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
+const serverless = require("serverless-http");
 
 const authRoutes = require("./routes/authRoutes");
 const searchRoutes = require("./routes/searchRoutes");
@@ -51,3 +52,5 @@ app.get("/profile", (req, res) => {
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
+
+module.exports.handler = serverless(app);
