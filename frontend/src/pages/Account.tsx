@@ -8,10 +8,9 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
-import React, { useState, useEffect } from "react";
-import { Navigate } from "react-router";
 import api from "@/globals";
 import axios from "axios";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
 function Account() {
