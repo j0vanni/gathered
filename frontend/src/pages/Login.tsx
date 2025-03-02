@@ -40,12 +40,7 @@ function Login() {
 
   const handleGoogleLogin = () => {
     console.log(process.env.NODE_ENV);
-    console.log(process.env.VERCEL_URL);
-    console.log(process.env.GOOGLE_CLIENT_ID);
-    console.log(process.env.GOOGLE_CLIENT_SECRET);
     console.log(process.env.JWT_SECRET);
-    console.log(process.env.SESSION_SECRET);
-    console.log(process.env.TMDB_API_KEY);
     // window.location.href = `${api}/auth/google`;
   };
 
