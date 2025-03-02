@@ -39,14 +39,7 @@ function Login() {
   }
 
   const handleGoogleLogin = () => {
-    console.log(api);
-    console.log(import.meta.env.VITE_FRONTEND_URL);
-    console.log(import.meta.env.VITE_VERCEL_URL);
-    console.log(import.meta.env.VITE_NODE_ENV);
-    console.log(import.meta.env.VITE_PORT);
-    console.log(process.env.TMDB_API_KEY);
-
-    // window.location.href = `${api}/auth/google`;
+    window.location.href = `${api}/auth/google`;
   };
 
   return (
