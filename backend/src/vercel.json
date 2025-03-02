@@ -12,10 +12,7 @@
     }
   ],
   "routes": [
-    { "src": "/auth/(.*)", "dest": "/backend/index.js" },
-    { "src": "/search/(.*)", "dest": "/backend/index.js" },
-    { "src": "/details/(.*)", "dest": "/backend/index.js" },
-    { "src": "/lists/(.*)", "dest": "/backend/index.js" },
+    { "src": "/(.*)", "dest": "/backend/index.js" },
     { "src": "/(.*)", "dest": "/frontend/$1" }
   ]
 }
