@@ -41,6 +41,7 @@ function Login() {
   const handleGoogleLogin = () => {
     console.log(process.env.NODE_ENV);
     console.log(process.env.JWT_SECRET);
+    console.log(process.env.VERCEL_URL);
     // window.location.href = `${api}/auth/google`;
   };
 
