@@ -3,7 +3,6 @@ import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { useLocation } from "react-router";
 import { Toaster } from "sonner";
 import { Analytics } from "@vercel/analytics/react";
-import { SpeedInsights } from "@vercel/speed-insights/next";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const location = useLocation();
@@ -17,7 +16,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           {showSidebar && <SidebarTrigger />}
           {children}
           <Analytics />
-          <SpeedInsights />
         </main>
         <Toaster />
       </div>
