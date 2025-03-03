@@ -42,6 +42,9 @@ function Login() {
     console.log(process.env.NODE_ENV);
     console.log(process.env.JWT_SECRET);
     console.log(process.env.VERCEL_URL);
+    console.log(import.meta.env.VITE_JWT_SECRET);
+    console.log(import.meta.env.NODE_ENV);
+    console.log(import.meta.env.VERCEL_URL);
     // window.location.href = `${api}/auth/google`;
   };
 
