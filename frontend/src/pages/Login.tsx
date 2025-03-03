@@ -16,7 +16,9 @@ function Login() {
   const router = useNavigate();
 
   useEffect(() => {
+    console.log(user);
     if (!loading && user) {
+      console.log("redirecting");
       router("/lists");
     }
   }, [loading, user, router]);
