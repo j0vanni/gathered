@@ -268,6 +268,7 @@ function ListTitle({
   const [listTitle, setListTitle] = useState(title);
   const [, setAddUserOpen] = useState(false);
   const [addUserEmail, setAddUserEmail] = useState("");
+
   const handleCancel = () => {
     setName(title);
     setOpen(false);
@@ -504,7 +505,7 @@ function List({}: Props) {
           withCredentials: true,
         });
 
-        if (res.status !== 200) {
+        if (!res.data) {
           window.location.href = "/";
         }
       } catch (error) {

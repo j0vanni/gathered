@@ -11,6 +11,7 @@ import { Label } from "@/components/ui/label";
 import api from "@/globals";
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { Navigate } from "react-router";
 import { toast } from "sonner";
 
 function Account() {
@@ -198,6 +199,8 @@ function Account() {
         setName(data.displayName);
         setEmail(data.email);
         setPfp(data.photo);
+
+        <Navigate to="/lists" />;
       })
       .catch((err) => {
         console.log(err);

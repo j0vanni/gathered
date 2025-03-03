@@ -19,7 +19,7 @@ function Login() {
           withCredentials: true,
         });
 
-        if (res.status === 200) {
+        if (res.data) {
           return <Navigate to="/lists" />;
         }
       } catch (error) {}

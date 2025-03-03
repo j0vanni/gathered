@@ -591,7 +591,7 @@ function Search({}: Props) {
           validateStatus: () => true,
         });
 
-        if (res.status !== 200) {
+        if (!res.data) {
           window.location.href = "/";
         }
       } catch (error) {
