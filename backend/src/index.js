@@ -16,6 +16,7 @@ const PORT = process.env.PORT || 3000;
 const app = express();
 const db = require("./config/firebase");
 
+app.set("trust proxy", 1);
 app.use(cookieParser());
 app.use(
   cors({
