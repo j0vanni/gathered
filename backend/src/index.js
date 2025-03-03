@@ -14,17 +14,7 @@ const detailsRoutes = require("./routes/detailsRoutes");
 const listRoutes = require("./routes/listRoutes");
 const PORT = process.env.PORT || 3000;
 const app = express();
-const fs = require("fs");
-
-var serviceAccount = JSON.parse(
-  fs.readFileSync("/etc/secrets/serviceAccountKey.json")
-);
-
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
-});
-
-const db = admin.firestore();
+const db = require("./config/firebase");
 
 app.use(cookieParser());
 app.use(
