@@ -9,11 +9,22 @@ import {
 } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import api from "@/globals";
+import useAuth from "@/useAuth";
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router";
 import { toast } from "sonner";
 
 function Account() {
+  const { user, loading } = useAuth();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!loading && user) {
+      navigate("/lists");
+    }
+  }, [user, loading, navigate]);
+
   const root = document.documentElement;
   const style = getComputedStyle(root);
 

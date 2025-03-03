@@ -7,8 +7,20 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import api from "@/globals";
+import useAuth from "@/useAuth";
+import { useEffect } from "react";
+import { useNavigate } from "react-router";
 
 function Login() {
+  const { user, loading } = useAuth();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!loading && user) {
+      navigate("/lists");
+    }
+  }, [user, loading, navigate]);
+
   const handleGoogleLogin = () => {
     window.location.href = `${api}/auth/google`;
   };

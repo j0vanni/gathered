@@ -20,7 +20,16 @@ app.set("trust proxy", 1);
 app.use(cookieParser());
 app.use(
   cors({
-    origin: process.env.URL,
+    origin: function (origin, callback) {
+      const allowedOrigins = [
+        "https://gathered.onrender.com",
+        "http://localhost:5173",
+        "https://gathered.watch",
+      ];
+      if (allowedOrigins.includes(origin)) {
+        callback(null, true);
+      }
+    },
     credentials: true,
   })
 );
