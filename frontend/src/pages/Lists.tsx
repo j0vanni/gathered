@@ -537,11 +537,14 @@ function List({}: Props) {
         toast.error("List name is required");
         return;
       }
+      console.log(api);
       await axios.post(
         `${api}/lists/create`,
         { listName: newListName },
         { withCredentials: true }
       );
+
+      console.log("list created");
 
       setListOpen(false);
       setNewListName("");
