@@ -37,8 +37,6 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import MovieType from "../types/MovieType";
 import TVType from "../types/TVType";
-import useAuth from "@/useAuth";
-import { useNavigate } from "react-router";
 
 type Props = {};
 
@@ -499,14 +497,14 @@ function List({}: Props) {
   const [listOpen, setListOpen] = useState(false);
   const [lists, setLists] = useState<List[]>([]);
   const [openStates, setOpenStates] = useState<Record<number, boolean>>({});
-  const { user, loading } = useAuth();
-  const router = useNavigate();
+  // const { user, loading } = useAuth();
+  // const router = useNavigate();
 
-  useEffect(() => {
-    if (!loading && !user) {
-      router("/");
-    }
-  }, [loading, user, router]);
+  // useEffect(() => {
+  //   if (!loading && !user) {
+  //     router("/");
+  //   }
+  // }, [loading, user, router]);
 
   useEffect(() => {
     getLists();
