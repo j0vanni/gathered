@@ -1,3 +1,3 @@
-const api = process.env.URL_API;
+const api = "https://gathered.onrender.com";
 
 export default api;
