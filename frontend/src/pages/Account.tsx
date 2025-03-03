@@ -9,9 +9,10 @@ import {
 } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import api from "@/globals";
+import useAuth from "@/useAuth";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { Navigate } from "react-router";
+import { useNavigate } from "react-router";
 import { toast } from "sonner";
 
 function Account() {
@@ -172,6 +173,14 @@ function Account() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [pfp, setPfp] = useState("");
+  const { user, loading } = useAuth();
+  const router = useNavigate();
+
+  useEffect(() => {
+    if (!loading && !user) {
+      router("/");
+    }
+  }, [loading, user, router]);
 
   const getUser = async () => {
     const res = await axios.get(api + "/auth/user", {
@@ -199,8 +208,6 @@ function Account() {
         setName(data.displayName);
         setEmail(data.email);
         setPfp(data.photo);
-
-        <Navigate to="/lists" />;
       })
       .catch((err) => {
         console.log(err);

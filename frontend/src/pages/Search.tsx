@@ -54,6 +54,8 @@ import { NumericFormat } from "react-number-format";
 import { toast } from "sonner";
 import { ResultsMovie, ResultsShow } from "../types/SearchType";
 import List from "./Lists";
+import { useNavigate } from "react-router";
+import useAuth from "@/useAuth";
 
 //<Progress value={percentage} />
 
@@ -582,24 +584,14 @@ function Search({}: Props) {
   const [query, setQuery] = useState("");
   const [searchToggle] = useState("all");
   const [lists, setLists] = useState<List[]>([]);
+  const { user, loading } = useAuth();
+  const router = useNavigate();
 
   useEffect(() => {
-    const checkLogin = async () => {
-      try {
-        const res = await axios.get(`${api}/auth/user`, {
-          withCredentials: true,
-          validateStatus: () => true,
-        });
-
-        if (!res.data) {
-          window.location.href = "/";
-        }
-      } catch (error) {
-        window.location.href = "/";
-      }
-    };
-    checkLogin();
-  }, []);
+    if (!loading && !user) {
+      router("/");
+    }
+  }, [loading, user, router]);
 
   const fetchSearchResults = async () => {
     try {

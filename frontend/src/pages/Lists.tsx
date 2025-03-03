@@ -37,6 +37,8 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import MovieType from "../types/MovieType";
 import TVType from "../types/TVType";
+import useAuth from "@/useAuth";
+import { useNavigate } from "react-router";
 
 type Props = {};
 
@@ -497,23 +499,14 @@ function List({}: Props) {
   const [listOpen, setListOpen] = useState(false);
   const [lists, setLists] = useState<List[]>([]);
   const [openStates, setOpenStates] = useState<Record<number, boolean>>({});
+  const { user, loading } = useAuth();
+  const router = useNavigate();
 
   useEffect(() => {
-    const checkLogin = async () => {
-      try {
-        const res = await axios.get(`${api}/auth/user`, {
-          withCredentials: true,
-        });
-
-        if (!res.data) {
-          window.location.href = "/";
-        }
-      } catch (error) {
-        window.location.href = "/";
-      }
-    };
-    checkLogin();
-  }, []);
+    if (!loading && !user) {
+      router("/");
+    }
+  }, [loading, user, router]);
 
   useEffect(() => {
     getLists();
