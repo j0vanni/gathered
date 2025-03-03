@@ -6,6 +6,7 @@ require("./config/passport")(passport);
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const serverless = require("serverless-http");
+const FirestoreStore = require("firestore-store")(session);
 
 const authRoutes = require("./routes/authRoutes");
 const searchRoutes = require("./routes/searchRoutes");
@@ -25,12 +26,15 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(
   session({
+    store: new FirestoreStore({
+      databaseUrl: process.env.FIRESTORE_DATABASE_URL,
+    }),
     secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
     cookie: {
       httpOnly: true,
-      secure: false,
+      secure: true,
       maxAge: 24 * 60 * 60 * 1000,
     },
   })
@@ -49,10 +53,8 @@ app.get("/profile", (req, res) => {
   res.json(req.user);
 });
 
-if (process.env.NODE_ENV !== "production") {
-  app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
-  });
-}
+app.listen(process.env.PORT, () => {
+  console.log(`Server is running on port ${process.env.PORT}`);
+});
 
 module.exports.handler = serverless(app);
