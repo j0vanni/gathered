@@ -7,26 +7,8 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import api from "@/globals";
-import axios from "axios";
-import { useEffect } from "react";
-import { Navigate } from "react-router";
 
 function Login() {
-  useEffect(() => {
-    const checkLogin = async () => {
-      try {
-        const res = await axios.get(`${api}/auth/user`, {
-          withCredentials: true,
-        });
-
-        if (res.status === 200) {
-          return <Navigate to="/lists" />;
-        }
-      } catch (error) {}
-    };
-    checkLogin();
-  }, []);
-
   const handleGoogleLogin = () => {
     window.location.href = `${api}/auth/google`;
   };

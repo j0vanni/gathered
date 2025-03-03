@@ -16,7 +16,11 @@ router.get(
 );
 router.get("/verify", authController.verifyToken);
 router.get("/current_user", (req, res) => {
-  res.json(req.user || { status: "not logged in" });
+  res.json(
+    req.user
+      ? { status: "logged in", user: req.user }
+      : { status: "not logged in" }
+  );
 });
 router.get("/signout", authController.verifyToken, authController.logout);
 router.get("/user", authController.verifyToken, authController.getUser);

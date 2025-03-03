@@ -583,24 +583,6 @@ function Search({}: Props) {
   const [searchToggle] = useState("all");
   const [lists, setLists] = useState<List[]>([]);
 
-  useEffect(() => {
-    const checkLogin = async () => {
-      try {
-        const res = await axios.get(`${api}/auth/user`, {
-          withCredentials: true,
-          validateStatus: () => true,
-        });
-
-        if (res.status !== 200) {
-          window.location.href = "/";
-        }
-      } catch (error) {
-        window.location.href = "/";
-      }
-    };
-    checkLogin();
-  }, []);
-
   const fetchSearchResults = async () => {
     try {
       const response = await axios.get(

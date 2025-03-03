@@ -498,27 +498,6 @@ function List({}: Props) {
   const [openStates, setOpenStates] = useState<Record<number, boolean>>({});
 
   useEffect(() => {
-    const checkLogin = async () => {
-      try {
-        const res = await axios.get(`${api}/auth/user`, {
-          withCredentials: true,
-        });
-
-        if (res.status !== 200) {
-          window.location.href = "/";
-        }
-      } catch (error) {
-        window.location.href = "/";
-      }
-    };
-    checkLogin();
-  }, []);
-
-  useEffect(() => {
-    getLists();
-  }, []);
-
-  useEffect(() => {
     if (lists.length > 0) {
       const storedOpenStates: Record<number, boolean> = {};
 

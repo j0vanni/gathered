@@ -177,10 +177,6 @@ function Account() {
       withCredentials: true,
     });
 
-    if (res.status !== 200) {
-      window.location.href = "/";
-    }
-
     return res.data;
   };
 
