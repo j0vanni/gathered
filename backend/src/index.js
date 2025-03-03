@@ -14,6 +14,7 @@ const detailsRoutes = require("./routes/detailsRoutes");
 const listRoutes = require("./routes/listRoutes");
 const PORT = process.env.PORT || 3000;
 const app = express();
+const fs = require("fs");
 
 var serviceAccount = JSON.parse(
   fs.readFileSync("/etc/secrets/serviceAccountKey.json")
