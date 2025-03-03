@@ -49,7 +49,6 @@ async function addUserToList(user, listId, userEmail) {
       name: userDoc.displayName,
       photo: userDoc.photo,
     };
-    console.log(newUser);
     if (!newUser.id) {
       throw new Error("User document missing googleId");
     }
@@ -76,7 +75,6 @@ async function removeUserFromList(listId, userId, user) {
       throw new Error("Cannot remove last user from list");
     }
 
-    console.log(user.googleId, listData.userIds[0]);
     if (!listData.userIds.includes(user.googleId)) {
       throw new Error("User not in list to remove");
     }

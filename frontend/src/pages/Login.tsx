@@ -8,12 +8,10 @@ import {
 } from "@/components/ui/card";
 import api from "@/globals";
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { Navigate } from "react-router";
 
 function Login() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-
   useEffect(() => {
     const checkLogin = async () => {
       try {
@@ -22,21 +20,12 @@ function Login() {
         });
 
         if (res.status === 200) {
-          setIsLoggedIn(true);
-          window.location.href = "/lists";
-        } else {
-          setIsLoggedIn(false);
+          return <Navigate to="/lists" />;
         }
-      } catch (error) {
-        setIsLoggedIn(false);
-      }
+      } catch (error) {}
     };
-    if (isLoggedIn) checkLogin();
+    checkLogin();
   }, []);
-
-  if (isLoggedIn) {
-    return <Navigate to="/lists" />;
-  }
 
   const handleGoogleLogin = () => {
     window.location.href = `${api}/auth/google`;
