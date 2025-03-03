@@ -19,7 +19,7 @@ googleCallback = (req, res) => {
     maxAge: 60 * 60 * 1000, // 1 hour in milliseconds
   });
 
-  res.redirect(`/lists`);
+  res.redirect(`${process.env.URL}/lists`);
 };
 
 verifyToken = (req, res, next) => {
