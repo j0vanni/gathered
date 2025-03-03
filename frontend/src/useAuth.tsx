@@ -15,6 +15,8 @@ export default function useAuth() {
         if (res.data) {
           setUser(res.data);
         }
+        console.log(res.data);
+        console.log(user);
       } catch (error) {
         console.error("Error fetching user:", error);
       } finally {
