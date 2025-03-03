@@ -7,13 +7,21 @@ const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const serverless = require("serverless-http");
 const FirestoreStore = require("firestore-store")(session);
-
+const admin = require("firebase-admin");
 const authRoutes = require("./routes/authRoutes");
 const searchRoutes = require("./routes/searchRoutes");
 const detailsRoutes = require("./routes/detailsRoutes");
 const listRoutes = require("./routes/listRoutes");
 const PORT = process.env.PORT || 3000;
 const app = express();
+
+admin.initializeApp({
+  credential: admin.credential.cert(
+    JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT_KEY)
+  ),
+});
+
+const db = admin.firestore();
 
 app.use(cookieParser());
 app.use(
@@ -27,7 +35,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(
   session({
     store: new FirestoreStore({
-      databaseUrl: process.env.FIRESTORE_DATABASE_URL,
+      database: db,
     }),
     secret: process.env.SESSION_SECRET,
     resave: false,
