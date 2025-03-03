@@ -4,8 +4,13 @@ const passport = require("passport");
 const authController = require("../controllers/authController");
 const searchController = require("../controllers/searchController");
 
-router.get("/all", searchController.searchAll);
-router.get("/movie", searchController.searchMovie);
-router.get("/tv", searchController.searchTV);
-router.get("/trending", searchController.getTrending);
+router.get("/all", authController.verifyToken, searchController.searchAll);
+router.get("/movie", authController.verifyToken, searchController.searchMovie);
+router.get("/tv", authController.verifyToken, searchController.searchTV);
+router.get(
+  "/trending",
+  authController.verifyToken,
+  searchController.getTrending
+);
+
 module.exports = router;

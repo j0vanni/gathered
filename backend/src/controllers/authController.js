@@ -19,10 +19,7 @@ googleCallback = (req, res) => {
     maxAge: 60 * 60 * 1000, // 1 hour in milliseconds
   });
 
-  const host =
-    process.env.NODE_ENV === "production"
-      ? `https://${process.env.VERCEL_URL}`
-      : process.env.FRONTEND_URL;
+  const host = process.env.URL;
 
   res.redirect(`${host}/lists`);
 };
