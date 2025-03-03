@@ -15,10 +15,12 @@ const listRoutes = require("./routes/listRoutes");
 const PORT = process.env.PORT || 3000;
 const app = express();
 
+var serviceAccount = JSON.parse(
+  fs.readFileSync("/etc/secrets/serviceAccountKey.json")
+);
+
 admin.initializeApp({
-  credential: admin.credential.cert(
-    JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT_KEY)
-  ),
+  credential: admin.credential.cert(serviceAccount),
 });
 
 const db = admin.firestore();
@@ -26,7 +28,7 @@ const db = admin.firestore();
 app.use(cookieParser());
 app.use(
   cors({
-    origin: process.env.FRONTEND_URL,
+    origin: process.env.URL,
     credentials: true,
   })
 );
