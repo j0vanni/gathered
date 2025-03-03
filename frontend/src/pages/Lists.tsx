@@ -37,6 +37,8 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import MovieType from "../types/MovieType";
 import TVType from "../types/TVType";
+import { useNavigate } from "react-router";
+import useAuth from "@/useAuth";
 
 type Props = {};
 
@@ -496,6 +498,14 @@ function List({}: Props) {
   const [listOpen, setListOpen] = useState(false);
   const [lists, setLists] = useState<List[]>([]);
   const [openStates, setOpenStates] = useState<Record<number, boolean>>({});
+  const { user, loading } = useAuth();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!loading && !user) {
+      navigate("/login");
+    }
+  }, [user, loading, navigate]);
 
   useEffect(() => {
     if (lists.length > 0) {
@@ -537,14 +547,12 @@ function List({}: Props) {
         toast.error("List name is required");
         return;
       }
-      console.log(api);
+
       await axios.post(
         `${api}/lists/create`,
         { listName: newListName },
         { withCredentials: true }
       );
-
-      console.log("list created");
 
       setListOpen(false);
       setNewListName("");
