@@ -1,3 +1,3 @@
-const api = "https://gathered.onrender.com";
+const api = "https://api.gathered.watch";
 
 export default api;
