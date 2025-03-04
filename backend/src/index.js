@@ -21,6 +21,7 @@ app.use(cookieParser());
 const allowedOrigins = [
   "http://localhost:5173",
   "https://gathered.watch",
+  "https://www.gathered.watch",
   process.env.URL,
 ];
 app.use(
@@ -35,6 +36,7 @@ app.use(function (req, res, next) {
   const allowedOrigins = [
     "http://localhost:5173",
     "https://gathered.watch",
+    "https://www.gathered.watch",
     process.env.URL,
   ];
   const origin = req.headers.origin;
