@@ -16,6 +16,7 @@ function Login() {
   const navigate = useNavigate();
 
   useEffect(() => {
+    console.log(user);
     if (!loading && user) {
       navigate("/lists");
     }

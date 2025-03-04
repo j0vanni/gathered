@@ -502,9 +502,10 @@ function List({}: Props) {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!loading && !user) {
-      navigate("/login");
-    }
+    console.log(user);
+    // if (!loading && !user) {
+    //   navigate("/login");
+    // }
   }, [user, loading, navigate]);
 
   useEffect(() => {
