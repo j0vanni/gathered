@@ -20,8 +20,8 @@ function Account() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!loading && user) {
-      navigate("/lists");
+    if (!loading && !user) {
+      navigate("/login");
     }
   }, [user, loading, navigate]);
 
@@ -200,16 +200,12 @@ function Account() {
   };
 
   useEffect(() => {
-    getUser()
-      .then((data) => {
-        setName(data.displayName);
-        setEmail(data.email);
-        setPfp(data.photo);
-      })
-      .catch((err) => {
-        console.log(err);
-        window.location.href = "/";
-      });
+    getUser().then((data) => {
+      const user = data.token;
+      setName(user.displayName);
+      setEmail(user.email);
+      setPfp(user.photo);
+    });
   }, []);
 
   const handleSignOut = async () => {

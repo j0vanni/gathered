@@ -79,11 +79,16 @@ async function saveColors(id, colors) {
 }
 
 async function getColors(id) {
-  const userDoc = await db.collection("users").doc(id).get();
-  if (!userDoc.exists) {
-    throw new Error("User not found");
+  try {
+    const userDoc = await db.collection("users").doc(id).get();
+    if (!userDoc.exists) {
+      throw new Error("User not found");
+    }
+    return userDoc.data().colors;
+  } catch (error) {
+    console.error(error);
+    throw error;
   }
-  return userDoc.data().colors;
 }
 
 module.exports = {
