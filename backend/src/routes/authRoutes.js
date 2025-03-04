@@ -23,7 +23,7 @@ router.get("/current_user", (req, res) => {
   );
 });
 router.get("/signout", authController.verifyToken, authController.logout);
-router.get("/user", authController.verifyToken, authController.getUser);
+router.get("/user", authController.getUser);
 router.post(
   "/saveColors",
   authController.verifyToken,

@@ -1,4 +1,3 @@
-// hooks/useAuth.js
 import { useState, useEffect } from "react";
 import axios from "axios";
 import api from "./globals";
@@ -13,8 +12,9 @@ export default function useAuth() {
         const res = await axios.get(`${api}/auth/user`, {
           withCredentials: true,
         });
+
         if (res.data) {
-          setUser(res.data);
+          setUser(res.data.token);
         }
       } catch (error) {
         console.error("User not authenticated", error);
@@ -23,7 +23,7 @@ export default function useAuth() {
       }
     }
     fetchUser();
-  }, []);
+  }, [user, loading]);
 
   return { user, loading };
 }

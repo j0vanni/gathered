@@ -6,6 +6,7 @@ import Lists from "./pages/Lists";
 import Login from "./pages/Login";
 import Search from "./pages/Search";
 import { useTheme } from "./useTheme";
+import ProtectedRoutes from "./utils/ProtectedRoutes";
 
 function App() {
   useTheme();
@@ -14,9 +15,11 @@ function App() {
       <Routes>
         <Route path="/" element={<Login />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/account" element={<Account />} />
-        <Route path="/search" element={<Search />} />
-        <Route path="/lists" element={<Lists />} />
+        <Route element={<ProtectedRoutes />}>
+          <Route path="/account" element={<Account />} />
+          <Route path="/search" element={<Search />} />
+          <Route path="/lists" element={<Lists />} />
+        </Route>
       </Routes>
     </Layout>
   );

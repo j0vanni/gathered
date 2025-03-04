@@ -18,9 +18,14 @@ const db = require("./config/firebase");
 
 app.set("trust proxy", 1);
 app.use(cookieParser());
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://gathered.watch",
+  process.env.URL,
+];
 app.use(
   cors({
-    origin: process.env.URL,
+    origin: allowedOrigins,
     credentials: true,
   })
 );
@@ -55,7 +60,7 @@ app.get("/profile", (req, res) => {
   res.json(req.user);
 });
 
-app.listen(PORT, "0.0.0.0", () => {
+app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
 

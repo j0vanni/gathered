@@ -44,11 +44,12 @@ logout = (req, res) => {
 
 getUser = (req, res) => {
   const token = req.cookies.token;
-  if (!token) {
-    return res.status(401).json({ error: "no token provided" });
+  if (token) {
+    const decoded = decodeToken(token);
+    res.json({ message: "success", token: decoded });
+  } else {
+    res.json({ message: "no token provided" });
   }
-  const decoded = decodeToken(token);
-  res.json(decoded);
 };
 
 decodeToken = (token) => {
