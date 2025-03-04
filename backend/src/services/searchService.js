@@ -7,7 +7,7 @@ exports.searchAll = async (query, page) => {
       `${api.baseUrl}/search/multi` + `?query=${query}` + `&page=${page}`;
     const options = {
       headers: {
-        Authorization: `Bearer ${process.env.TMBD_API_KEY}`,
+        Authorization: `Bearer ${api.apiKey}`,
       },
     };
     const response = await axios.get(url, options);
@@ -38,7 +38,7 @@ exports.searchMovie = async (query, page) => {
       `${api.baseUrl}/search/movie` + `?query=${query}` + `&page=${page}`;
     const options = {
       headers: {
-        Authorization: `Bearer ${process.env.TMBD_API_KEY}`,
+        Authorization: `Bearer ${api.apiKey}`,
       },
     };
     const response = await axios.get(url, options);
@@ -66,7 +66,7 @@ exports.searchTV = async (query, page) => {
       `${api.baseUrl}/search/tv` + `?query=${query}` + `&page=${page}`;
     const options = {
       headers: {
-        Authorization: `Bearer ${process.env.TMBD_API_KEY}`,
+        Authorization: `Bearer ${api.apiKey}`,
       },
     };
     const response = await axios.get(url, options);
@@ -93,7 +93,7 @@ exports.getTrending = async () => {
     const url = `${api.baseUrl}/trending/all/week`;
     const options = {
       headers: {
-        Authorization: `Bearer ${process.env.TMBD_API_KEY}`,
+        Authorization: `Bearer ${api.apiKey}`,
       },
     };
     const response = await axios.get(url, options);

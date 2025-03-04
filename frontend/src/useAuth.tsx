@@ -23,7 +23,7 @@ export default function useAuth() {
       }
     }
     fetchUser();
-  }, []);
+  }, [user, loading]);
 
   return { user, loading };
 }
