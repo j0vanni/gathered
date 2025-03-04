@@ -64,8 +64,8 @@ app.get("/profile", (req, res) => {
   res.json(req.user);
 });
 
-app.listen(3000, "0.0.0.0", () => {
-  console.log(`Server is running on port 3000`);
+app.listen(PORT, "0.0.0.0", () => {
+  console.log(`Server is running on port ${PORT}`);
 });
 
 module.exports.handler = serverless(app);
