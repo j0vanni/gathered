@@ -25,7 +25,7 @@ const allowedOrigins = [
 ];
 app.use(
   cors({
-    origin: allowedOrigins,
+    origin: "https://gathered.watch",
     credentials: true,
   })
 );
