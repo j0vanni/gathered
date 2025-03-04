@@ -15,8 +15,9 @@ googleCallback = (req, res) => {
   const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: "1h" });
   res.cookie("token", token, {
     httpOnly: true,
-    sameSite: "strict",
-    maxAge: 60 * 60 * 1000, // 1 hour in milliseconds
+    sameSite: "none",
+    secure: true,
+    maxAge: 24 * 7 * 60 * 60 * 1000, // 1 week in milliseconds
   });
 
   res.redirect(`${process.env.URL}/lists`);
