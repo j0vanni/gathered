@@ -178,7 +178,9 @@ function TVAlert(item: any) {
   useEffect(() => {
     const fetchTvDetails = async () => {
       try {
-        const response = await axios.get(`${api}/details/tv?id=${item.id}`);
+        const response = await axios.get(`${api}/details/tv?id=${item.id}`, {
+          withCredentials: true,
+        });
         setTvDetails(response.data);
       } catch (error) {
         console.error("Error fetching TV details:", error);
@@ -280,7 +282,9 @@ function MovieAlert(item: any) {
   useEffect(() => {
     const fetchMovieDetails = async () => {
       try {
-        const response = await axios.get(`${api}/details/movie?id=${item.id}`);
+        const response = await axios.get(`${api}/details/movie?id=${item.id}`, {
+          withCredentials: true,
+        });
         setMovieDetails(response.data);
       } catch (error) {
         console.error("Error fetching movie details:", error);

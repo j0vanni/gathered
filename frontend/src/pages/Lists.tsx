@@ -508,6 +508,7 @@ function List({}: Props) {
   }, [user, loading, navigate]);
 
   useEffect(() => {
+    getLists();
     if (lists.length > 0) {
       const storedOpenStates: Record<number, boolean> = {};
 
