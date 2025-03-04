@@ -106,8 +106,12 @@ saveColors = async (req, res) => {
 
 getColors = async (req, res) => {
   const user = req.user;
-  const colors = await userService.getColors(user.firebaseId);
-  return res.status(200).json(colors);
+  try {
+    const colors = await userService.getColors(user.firebaseId);
+    return res.status(200).json(colors);
+  } catch (error) {
+    return res.status(500).json({ error: "Failed to get colors" });
+  }
 };
 
 module.exports = {
