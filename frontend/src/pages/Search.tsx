@@ -596,7 +596,10 @@ function Search({}: Props) {
   const fetchSearchResults = async () => {
     try {
       const response = await axios.get(
-        `${api}/search/${searchToggle}?query=${query}&page=${page}`
+        `${api}/search/${searchToggle}?query=${query}&page=${page}`,
+        {
+          withCredentials: true,
+        }
       );
       setSearchItems(response.data.results);
       setTotalPages(response.data.total_pages);
