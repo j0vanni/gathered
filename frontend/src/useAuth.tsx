@@ -8,6 +8,13 @@ export default function useAuth() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    async function checkLocalStorage() {
+      const user = localStorage.getItem("user");
+      if (user) {
+        setUser(JSON.parse(user));
+      }
+    }
+    checkLocalStorage();
     async function fetchUser() {
       try {
         const res = await axios.get(`${api}/auth/user`, {
@@ -22,7 +29,9 @@ export default function useAuth() {
         setLoading(false);
       }
     }
-    fetchUser();
+    if (!user) {
+      fetchUser();
+    }
   }, []);
 
   return { user, loading };

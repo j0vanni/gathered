@@ -54,8 +54,6 @@ import { NumericFormat } from "react-number-format";
 import { toast } from "sonner";
 import { ResultsMovie, ResultsShow } from "../types/SearchType";
 import List from "./Lists";
-import useAuth from "@/useAuth";
-import { useNavigate } from "react-router";
 
 //<Progress value={percentage} />
 
@@ -584,14 +582,6 @@ function Search({}: Props) {
   const [query, setQuery] = useState("");
   const [searchToggle] = useState("all");
   const [lists, setLists] = useState<List[]>([]);
-  const { user, loading } = useAuth();
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    if (!loading && !user) {
-      navigate("/login");
-    }
-  }, [user, loading, navigate]);
 
   const fetchSearchResults = async () => {
     try {

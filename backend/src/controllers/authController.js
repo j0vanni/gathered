@@ -20,7 +20,16 @@ googleCallback = (req, res) => {
     maxAge: 24 * 7 * 60 * 60 * 1000, // 1 week in milliseconds
   });
 
-  res.redirect(`${process.env.URL}/lists`);
+  res.send(`
+    <script>
+      if (window.opener) {
+        window.opener.location.href = "${process.env.URL}/lists";
+        window.close();
+      } else {
+        window.location.href = "${process.env.URL}/lists";
+      }
+    </script>
+  `);
 };
 
 verifyToken = (req, res, next) => {
