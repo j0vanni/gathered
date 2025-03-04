@@ -3,8 +3,7 @@ const axios = require("axios");
 
 exports.searchAll = async (query, page) => {
   try {
-    const url =
-      `${api.baseUrl}/search/multi` + `?query=${query}` + `&page=${page}`;
+    const url = `${api.baseUrl}/search/multi?query=${query}&page=${page}`;
     const options = {
       headers: {
         Authorization: `Bearer ${api.apiKey}`,
@@ -34,8 +33,7 @@ exports.searchAll = async (query, page) => {
 
 exports.searchMovie = async (query, page) => {
   try {
-    const url =
-      `${api.baseUrl}/search/movie` + `?query=${query}` + `&page=${page}`;
+    const url = `${api.baseUrl}/search/movie?query=${query}&page=${page}`;
     const options = {
       headers: {
         Authorization: `Bearer ${api.apiKey}`,
@@ -62,8 +60,7 @@ exports.searchMovie = async (query, page) => {
 
 exports.searchTV = async (query, page) => {
   try {
-    const url =
-      `${api.baseUrl}/search/tv` + `?query=${query}` + `&page=${page}`;
+    const url = `${api.baseUrl}/search/tv?query=${query}&page=${page}`;
     const options = {
       headers: {
         Authorization: `Bearer ${api.apiKey}`,
