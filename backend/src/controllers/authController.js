@@ -20,16 +20,7 @@ googleCallback = (req, res) => {
     maxAge: 24 * 7 * 60 * 60 * 1000, // 1 week in milliseconds
   });
 
-  res.send(`
-    <script>
-      if (window.opener) {
-        window.opener.location.href = "${process.env.URL}/lists";
-        window.close();
-      } else {
-        window.location.href = "${process.env.URL}/lists";
-      }
-    </script>
-  `);
+  res.redirect(`${process.env.URL}/lists`);
 };
 
 verifyToken = (req, res, next) => {
@@ -57,6 +48,7 @@ getUser = (req, res) => {
     return res.status(401).json({ error: "no token provided" });
   }
   const decoded = decodeToken(token);
+  console.log("user is signed in", decoded);
   res.json(decoded);
 };
 
