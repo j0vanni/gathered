@@ -14,6 +14,7 @@ googleCallback = (req, res) => {
 
   const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: "1h" });
   res.cookie("token", token, {
+    domain: "gathered.watch",
     httpOnly: true,
     sameSite: "none",
     secure: true,
