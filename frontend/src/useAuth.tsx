@@ -7,20 +7,14 @@ export default function useAuth() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    async function checkLocalStorage() {
-      const user = localStorage.getItem("user");
-      if (user) {
-        setUser(JSON.parse(user));
-      }
-    }
-    checkLocalStorage();
     async function fetchUser() {
       try {
         const res = await axios.get(`${api}/auth/user`, {
           withCredentials: true,
         });
+
         if (res.data) {
-          setUser(res.data);
+          setUser(res.data.token);
         }
       } catch (error) {
         console.error("User not authenticated", error);
@@ -28,10 +22,8 @@ export default function useAuth() {
         setLoading(false);
       }
     }
-    if (!user) {
-      fetchUser();
-    }
-  }, []);
+    fetchUser();
+  }, [user, loading]);
 
   return { user, loading };
 }
