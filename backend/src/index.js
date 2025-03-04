@@ -22,11 +22,12 @@ const allowedOrigins = [
   "http://localhost:5173",
   "https://gathered.watch",
   "https://www.gathered.watch",
+  "https://api.gathered.watch",
   process.env.URL,
 ];
 app.use(
   cors({
-    origin: "https://gathered.watch",
+    origin: "https://api.gathered.watch",
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Origin", "X-Requested-With", "Content-Type", "Accept"],
@@ -37,6 +38,7 @@ app.use(function (req, res, next) {
     "http://localhost:5173",
     "https://gathered.watch",
     "https://www.gathered.watch",
+    "https://api.gathered.watch",
     process.env.URL,
   ];
   const origin = req.headers.origin;
