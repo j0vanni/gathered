@@ -22,18 +22,19 @@ function Login() {
   }, [user, loading, navigate]);
 
   const handleGoogleLogin = () => {
-    fetch(`${api}/auth/google`, { method: "GET", credentials: "include" })
-      .then((response) => {
-        if (response.status === 200) {
-          navigate("/lists");
-        } else {
-          window.location.href = `${api}/auth/google`;
-        }
-      })
-      .catch((error) => {
-        console.error("Authentication error:", error);
-        window.location.href = `${api}/auth/google`;
-      });
+    window.location.href = `${api}/auth/google`;
+    // fetch(`${api}/auth/google`, { method: "GET", credentials: "include" })
+    //   .then((response) => {
+    //     if (response.status === 200) {
+    //       navigate("/lists");
+    //     } else {
+    //       window.location.href = `${api}/auth/google`;
+    //     }
+    //   })
+    //   .catch((error) => {
+    //     console.error("Authentication error:", error);
+    //     window.location.href = `${api}/auth/google`;
+    //   });
   };
 
   return (

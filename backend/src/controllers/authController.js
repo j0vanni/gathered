@@ -12,17 +12,15 @@ googleCallback = (req, res) => {
     photo: user.photo,
   };
 
-  const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: "1h" });
+  const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: "1w" });
   res.cookie("token", token, {
-    domain: ".gathered.watch",
     httpOnly: true,
     sameSite: "none",
     secure: true,
     maxAge: 24 * 7 * 60 * 60 * 1000, // 1 week in milliseconds
+    expires: new Date(Date.now() + 24 * 7 * 60 * 60 * 1000),
   });
-
   res.redirect(`${process.env.URL}/lists`);
-};
 
 verifyToken = (req, res, next) => {
   const token = req.cookies.token;
@@ -44,6 +42,7 @@ logout = (req, res) => {
     sameSite: "none",
     secure: true,
   });
+
   res.status(200).json({ message: "success" });
 };
 
