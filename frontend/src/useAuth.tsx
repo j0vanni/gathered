@@ -7,23 +7,30 @@ export default function useAuth() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    async function fetchUser() {
-      try {
-        const res = await axios.get(`${api}/auth/user`, {
-          withCredentials: true,
-        });
+    // async function fetchUser() {
+    //   try {
+    //     const res = await axios.get(`${api}/auth/user`, {
+    //       withCredentials: true,
+    //     });
 
-        if (res.data) {
-          setUser(res.data.token);
-        }
-      } catch (error) {
-        console.error("User not authenticated", error);
-      } finally {
-        setLoading(false);
-      }
+    //     if (res.data) {
+    //       setUser(res.data.token);
+    //     }
+    //   } catch (error) {
+    //     console.error("User not authenticated", error);
+    //   } finally {
+    //     setLoading(false);
+    //   }
+    // }
+    // fetchUser();
+    async function testing() {
+      const res = await axios.get(`${api}/auth/user`, {
+        withCredentials: true,
+      });
+      console.log(res.data);
     }
-    fetchUser();
+    testing();
   }, []);
 
-  return { user, loading };
+  return { user: "sure!", loading: false };
 }
