@@ -66,9 +66,7 @@ exports.searchTV = async (query, page) => {
         Authorization: `Bearer ${api.apiKey}`,
       },
     };
-    console.log(url, options);
     const response = await axios.get(url, options);
-    console.log(response.data);
     if (response.data.results) {
       response.data.results = response.data.results.map((item) => ({
         ...item,

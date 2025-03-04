@@ -6,7 +6,7 @@ exports.getDetailsTV = async (id) => {
     const url = `${api.baseUrl}/tv/${id}`;
     const options = {
       headers: {
-        Authorization: `Bearer ${process.env.TMBD_API_KEY}`,
+        Authorization: `Bearer ${api.apiKey}`,
       },
     };
     const response = await axios.get(url, options);
@@ -31,7 +31,7 @@ exports.getDetailsMovie = async (id) => {
     const url = `${api.baseUrl}/movie/${id}`;
     const options = {
       headers: {
-        Authorization: `Bearer ${process.env.TMBD_API_KEY}`,
+        Authorization: `Bearer ${api.apiKey}`,
       },
     };
     const response = await axios.get(url, options);
