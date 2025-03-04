@@ -1,10 +1,10 @@
-import { useState, useEffect } from "react";
 import axios from "axios";
+import { useEffect } from "react";
 import api from "./globals";
 
 export default function useAuth() {
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
+  // const [user, setUser] = useState(null);
+  // const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     // async function fetchUser() {
