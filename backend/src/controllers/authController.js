@@ -21,6 +21,7 @@ googleCallback = (req, res) => {
     expires: new Date(Date.now() + 24 * 7 * 60 * 60 * 1000),
   });
   res.redirect(`${process.env.URL}/lists`);
+};
 
 verifyToken = (req, res, next) => {
   const token = req.cookies.token;
