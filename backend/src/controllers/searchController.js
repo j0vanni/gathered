@@ -2,7 +2,6 @@ const searchService = require("../services/searchService");
 
 exports.searchAll = async (req, res) => {
   const { query: query, page: page } = req.query;
-  console.log(query, page, process.env.TMDB_API_KEY);
   if (!query) {
     return res.status(400).json({ error: "Query parameter is required" });
   }

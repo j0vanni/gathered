@@ -599,14 +599,20 @@ function Search({}: Props) {
 
   const fetchSearchResults = async () => {
     try {
-      const response = await axios.get(
-        `${api}/search/${searchToggle}?query=${query}&page=${page}`,
-        {
-          withCredentials: true,
-        }
-      );
-      setSearchItems(response.data.results);
-      setTotalPages(response.data.total_pages);
+      if (query.length > 0) {
+        const response = await axios.get(
+          `${api}/search/${searchToggle}?query=${query}&page=${page}`,
+          {
+            withCredentials: true,
+          }
+        );
+        setSearchItems(response.data.results);
+        setTotalPages(response.data.total_pages);
+      } else {
+        setSearchItems([]);
+        setTotalPages(1);
+        fetchTrendingResults();
+      }
     } catch (error) {
       console.error("Error fetching search results:", error);
     }
