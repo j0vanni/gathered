@@ -117,7 +117,7 @@ function MovieBox({
       </div>
       <img
         src={item.poster_path}
-        className="aspect-auto w-full rounded-md opacity-100"
+        className="aspect-[2/3] object-cover rounded-md opacity-100"
       />
       <div className="flex items-center text-center flex-col">
         <p className="text-sm font-bold pb-0 w-full truncate">{item.title}</p>
@@ -238,7 +238,7 @@ function ShowBox({
       </div>
       <img
         src={item.poster_path}
-        className="aspect-auto w-full rounded-md opacity-100"
+        className="aspect-[2/3] object-cover rounded-md opacity-100"
       />
 
       <div className="flex items-center text-center flex-col">
@@ -521,7 +521,15 @@ function List({}: Props) {
 
       setOpenStates(storedOpenStates);
     }
-  }, [lists]);
+
+    const intervalId = setInterval(() => {
+      getLists();
+    }, 30000);
+
+    return () => {
+      clearInterval(intervalId);
+    };
+  }, []);
 
   async function getLists() {
     const response = await axios.get(`${api}/lists/`, {
@@ -664,14 +672,14 @@ function List({}: Props) {
                   )}
                 </Button>
               </div>
-              <div className="flex w-full">
-                <div className="flex flex-row gap-4 flex-wrap content-center justify-center align-center">
+              <div className="w-full ">
+                <div className="grid sm:grid-cols-6 grid-cols-3 gap-4">
                   {isOpen &&
                     Object.entries(list.items).map(([_id, item]) => {
                       return "seasons" in item ? (
                         <ShowBox
                           item={item as TVType}
-                          className="sm:w-1/6 w-1/4"
+                          className=""
                           handleRemoveItem={(itemId) => {
                             handleRemoveItem(list.listId, itemId, "tv");
                           }}
@@ -680,7 +688,7 @@ function List({}: Props) {
                       ) : (
                         <MovieBox
                           item={item as MovieType}
-                          className="sm:w-1/6 w-1/4"
+                          className=""
                           handleRemoveItem={(itemId) => {
                             handleRemoveItem(list.listId, itemId, "movie");
                           }}

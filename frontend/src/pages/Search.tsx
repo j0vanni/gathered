@@ -171,28 +171,8 @@ function MovieItem(item: ResultsMovie) {
   );
 }
 
-function TVAlert(item: any) {
+function TVAlert(tvDetails: TVType) {
   const isMobile = useIsMobile();
-  const [tvDetails, setTvDetails] = useState<TVType | null>(null);
-
-  useEffect(() => {
-    const fetchTvDetails = async () => {
-      try {
-        const response = await axios.get(`${api}/details/tv?id=${item.id}`, {
-          withCredentials: true,
-        });
-        setTvDetails(response.data);
-      } catch (error) {
-        console.error("Error fetching TV details:", error);
-      }
-    };
-
-    fetchTvDetails();
-  }, [item.id]);
-
-  if (!tvDetails) {
-    return null;
-  }
 
   if (isMobile) {
     return (
@@ -275,35 +255,17 @@ function TVAlert(item: any) {
   }
 }
 
-function MovieAlert(item: any) {
+function MovieAlert(movieDetails: MovieType) {
   const isMobile = useIsMobile();
-  const [movieDetails, setMovieDetails] = useState<MovieType | null>(null);
-
-  useEffect(() => {
-    const fetchMovieDetails = async () => {
-      try {
-        const response = await axios.get(`${api}/details/movie?id=${item.id}`, {
-          withCredentials: true,
-        });
-        setMovieDetails(response.data);
-      } catch (error) {
-        console.error("Error fetching movie details:", error);
-      }
-    };
-
-    fetchMovieDetails();
-  }, [item.id]);
-
-  if (!movieDetails) {
-    return null;
-  }
 
   if (isMobile) {
     return (
       <DrawerHeader>
         <DrawerTitle>
           <div className="flex flex-row">
-            <p className="uppercase truncate w-52">{movieDetails.title}</p>
+            <p className="uppercase truncate max-w-52 pr-2">
+              {movieDetails.title}
+            </p>
             <p className="ml-1 text-xs mt-2 text-black/50">
               {movieDetails.runtime} minutes
             </p>
@@ -357,7 +319,9 @@ function MovieAlert(item: any) {
       <DialogHeader>
         <DialogTitle>
           <div className="flex flex-row">
-            <p className="uppercase truncate w-64">{movieDetails.title}</p>
+            <p className="uppercase truncate max-w-64 pr-2">
+              {movieDetails.title}
+            </p>
             <p className="ml-1 text-xs mt-2 text-black/50">
               {movieDetails.runtime} minutes
             </p>
@@ -471,6 +435,8 @@ function SearchItem({
   const isMobile = useIsMobile();
   const [open, setOpen] = useState(false);
   const [selectedListId, setSelectedListId] = useState<string | null>(null);
+  const [details, setDetails] = useState<any>(null);
+  const [loadedDetails, setLoadedDetails] = useState(false);
 
   const handleAddToList = () => {
     if (selectedListId) {
@@ -484,11 +450,49 @@ function SearchItem({
   const handleClose = () => {
     setOpen(false);
     setSelectedListId(null);
+    setLoadedDetails(false);
+    setDetails(null);
+  };
+
+  useEffect(() => {
+    if (open) {
+      const fetchDetails = async () => {
+        try {
+          const url =
+            item.media_type === "tv"
+              ? `${api}/details/tv?id=${item.id}`
+              : `${api}/details/movie?id=${item.id}`;
+          const response = await axios.get(url, {
+            withCredentials: true,
+          });
+          setDetails(response.data);
+          setLoadedDetails(true);
+        } catch (error) {
+          console.error("Error fetching details:", error);
+        }
+      };
+      fetchDetails();
+    } else {
+      setDetails(null);
+    }
+  }, [open, item.id, item.media_type]);
+
+  const renderDetails = () => {
+    if (!loadedDetails) {
+      return null;
+    } else if (details && loadedDetails) {
+      return item.media_type === "tv" ? (
+        <TVAlert {...details} />
+      ) : (
+        <MovieAlert {...details} />
+      );
+    }
+    return null;
   };
 
   if (isMobile) {
     return (
-      <Drawer open={open} onOpenChange={setOpen}>
+      <Drawer open={loadedDetails} onOpenChange={setOpen}>
         <DrawerTrigger className="w-full text-left">
           {item.media_type === "tv" ? (
             <ShowItem {...(item as ResultsShow)} />
@@ -497,11 +501,7 @@ function SearchItem({
           )}
         </DrawerTrigger>
         <DrawerContent className="w-full rounded-md">
-          {item.media_type === "tv" ? (
-            <TVAlert {...item} />
-          ) : (
-            <MovieAlert {...item} />
-          )}
+          {renderDetails()}
           <DrawerFooter className="flex flex-row items-center gap-1">
             <Select onValueChange={setSelectedListId}>
               <SelectTrigger className="w-full mr-auto truncate">
@@ -529,7 +529,7 @@ function SearchItem({
     );
   } else {
     return (
-      <Dialog open={open} onOpenChange={setOpen}>
+      <Dialog open={loadedDetails} onOpenChange={setOpen}>
         <DialogTrigger className="w-full text-left">
           {item.media_type === "tv" ? (
             <ShowItem {...(item as ResultsShow)} />
@@ -538,11 +538,7 @@ function SearchItem({
           )}
         </DialogTrigger>
         <DialogContent className="w-full rounded-md [&>button]:hidden">
-          {item.media_type === "movie" ? (
-            <MovieAlert {...item} />
-          ) : (
-            <TVAlert {...item} />
-          )}
+          {renderDetails()}
           <DialogFooter className="flex flex-row items-center gap-1">
             <Select onValueChange={setSelectedListId}>
               <SelectTrigger className="w-full mr-auto truncate">
@@ -559,7 +555,9 @@ function SearchItem({
               </SelectContent>
             </Select>
             <DialogClose>
-              <Button variant="outline">Cancel</Button>
+              <Button variant="outline" onClick={handleClose}>
+                Cancel
+              </Button>
             </DialogClose>
             <Button onClick={handleAddToList}>Add to List</Button>
           </DialogFooter>
@@ -626,7 +624,7 @@ function Search({}: Props) {
 
   const fetchTrendingResults = async () => {
     try {
-      const response = await axios.get(`${api}/search/trending`, {
+      const response = await axios.get(`${api}/search/trending?page=${page}`, {
         withCredentials: true,
       });
       setTrendingItems(response.data.results);
@@ -696,7 +694,7 @@ function Search({}: Props) {
                     item={item}
                     lists={lists}
                     onAddToList={handleAddToList}
-                  ></SearchItem>
+                  />
                 </div>
               ))}
             </>
