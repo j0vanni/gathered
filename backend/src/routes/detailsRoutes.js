@@ -5,6 +5,11 @@ const authController = require("../controllers/authController");
 
 router.get("/tv", authController.verifyToken, detailsController.getDetailsTV);
 router.get(
+  "/tv/episode",
+  authController.verifyToken,
+  detailsController.getEpisodeDetails
+);
+router.get(
   "/movie",
   authController.verifyToken,
   detailsController.getDetailsMovie

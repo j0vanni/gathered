@@ -79,6 +79,10 @@ async function removeUserFromList(listId, userId, user) {
       throw new Error("User not in list to remove");
     }
 
+    if (userId === listData.userIds[0]) {
+      throw new Error("Cannot remove owner from list");
+    }
+
     if (listData.userIds.includes(userId)) {
       listData.users = listData.users.filter((user) => user.id !== userId);
       listData.userIds = listData.userIds.filter((id) => id !== userId);

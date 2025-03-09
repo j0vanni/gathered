@@ -26,6 +26,28 @@ exports.getDetailsTV = async (id) => {
   }
 };
 
+exports.getEpisodeDetails = async (id) => {
+  try {
+    const url = `${api.baseUrl}/tv/${id}/season/${season}/episode/${episode}`;
+    const options = {
+      headers: {
+        Authorization: `Bearer ${api.apiKey}`,
+      },
+    };
+    const response = await axios.get(url, options);
+    const filteredResponse = {
+      ...response.data,
+      still_path: response.data.still_path
+        ? `${api.imageUrl}${response.data.still_path}`
+        : null,
+    };
+    return filteredResponse;
+  } catch (error) {
+    console.error("Error fetching episode details:", error);
+    throw error;
+  }
+};
+
 exports.getDetailsMovie = async (id) => {
   try {
     const url = `${api.baseUrl}/movie/${id}`;
