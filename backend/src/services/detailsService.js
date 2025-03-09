@@ -26,7 +26,7 @@ exports.getDetailsTV = async (id) => {
   }
 };
 
-exports.getEpisodeDetails = async (id) => {
+exports.getEpisodeDetails = async (id, season, episode) => {
   try {
     const url = `${api.baseUrl}/tv/${id}/season/${season}/episode/${episode}`;
     const options = {

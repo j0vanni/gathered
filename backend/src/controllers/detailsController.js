@@ -14,12 +14,12 @@ exports.getDetailsTV = async (req, res) => {
 };
 
 exports.getEpisodeDetails = async (req, res) => {
-  const { id: id } = req.query;
+  const { id: id, season: season, episode: episode } = req.query;
   if (!id) {
     return res.status(400).json({ error: "ID parameter is required" });
   }
   try {
-    const details = await detailsService.getEpisodeDetails(id);
+    const details = await detailsService.getEpisodeDetails(id, season, episode);
     res.json(details);
   } catch (error) {
     res.status(500).json({ error: "Failed to fetch episode details" });
