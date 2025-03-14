@@ -529,7 +529,15 @@ function SearchItem({
     );
   } else {
     return (
-      <Dialog open={loadedDetails} onOpenChange={setOpen}>
+      <Dialog
+        open={loadedDetails}
+        onOpenChange={(isOpen) => {
+          if (!isOpen) {
+            handleClose();
+          }
+          setOpen(isOpen);
+        }}
+      >
         <DialogTrigger className="w-full text-left">
           {item.media_type === "tv" ? (
             <ShowItem {...(item as ResultsShow)} />

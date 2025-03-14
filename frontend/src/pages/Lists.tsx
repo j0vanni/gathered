@@ -39,6 +39,15 @@ import MovieType from "../types/MovieType";
 import TVType from "../types/TVType";
 import { useNavigate } from "react-router";
 import useAuth from "@/useAuth";
+import { EpisodeType } from "@/types/EpisodeType";
+import { Skeleton } from "@/components/ui/skeleton";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 type Props = {};
 
@@ -72,15 +81,21 @@ function MovieBox({
   const [didWatch, setDidWatched] = useState(
     item.watching ? item.watching?.watched : false
   );
+  const [open, setOpen] = useState(false);
+  const isMobile = useIsMobile();
 
-  const handleWatched = async () => {
-    setDidWatched((prev) => {
-      updateWatching(!prev);
-      return !prev;
-    });
+  const handleMovieEditor = (open: boolean) => {
+    setOpen(open);
   };
 
   const updateWatching = async (watchVar: boolean) => {
+    handleMovieEditor(false);
+
+    setDidWatched(watchVar);
+    if (item.watching) {
+      item.watching.watched = watchVar;
+    }
+
     try {
       await axios.post(
         `${api}/lists/updateWatching`,
@@ -93,32 +108,49 @@ function MovieBox({
         { withCredentials: true }
       );
     } catch (error) {
+      setDidWatched(!watchVar);
+      if (item.watching) {
+        item.watching.watched = !watchVar;
+      }
       toast.error("Failed to update watch status");
     }
   };
 
   return (
     <div className={`relative group ${className}`}>
-      <div className="absolute inset-0 flex flex-col items-center justify-start group-hover:opacity-100 opacity-0 transition-all duration-300">
-        <div className="mt-[50%] -translate-y-[50%] flex flex-col items-center justify-around w-full">
-          <Button
-            className="text-wrap text-xs w-11/12 bg-background/40 hover:bg-background/70 text-foreground mix-blend-lighter"
-            onClick={handleWatched}
-          >
-            mark as {didWatch ? "unwatched" : "watched"}
-          </Button>
-        </div>
-        <Button
-          className="mt-[25%] -translate-y-[50%] text-xs w-3/5 h-6 top-40 bg-red-600/50 hover:bg-red-800/70 text-background mix-blend-lighter"
-          onClick={() => handleRemoveItem(item.id)}
-        >
-          remove
-        </Button>
-      </div>
-      <img
-        src={item.poster_path}
-        className="aspect-[2/3] object-cover rounded-md opacity-100"
-      />
+      {isMobile ? (
+        <Drawer open={open} onOpenChange={setOpen}>
+          <DrawerTrigger asChild>
+            <img
+              src={item.poster_path}
+              className="aspect-[2/3] object-cover rounded-md opacity-100"
+            />
+          </DrawerTrigger>
+          {open && (
+            <MovieEditor
+              movieDetails={item}
+              handleRemoveItem={() => handleRemoveItem(item.id)}
+              handleOK={updateWatching}
+            />
+          )}
+        </Drawer>
+      ) : (
+        <Dialog open={open} onOpenChange={setOpen}>
+          <DialogTrigger asChild>
+            <img
+              src={item.poster_path}
+              className="aspect-[2/3] object-cover rounded-md opacity-100"
+            />
+          </DialogTrigger>
+          {open && (
+            <MovieEditor
+              movieDetails={item}
+              handleRemoveItem={() => handleRemoveItem(item.id)}
+              handleOK={updateWatching}
+            />
+          )}
+        </Dialog>
+      )}
       <div className="flex items-center text-center flex-col">
         <p className="text-sm font-bold pb-0 w-full truncate">{item.title}</p>
 
@@ -154,22 +186,48 @@ function ShowBox({
   const [currSeasonEP, setCurrSeasonEP] = useState(
     item.seasons.find((s) => s.season_number === season)?.episode_count || 0
   );
+  const [open, setOpen] = useState(false);
   const maxSeason = item.seasons.reduce(
     (max, s) => Math.max(max, s.season_number),
     0
   );
+  const isMobile = useIsMobile();
 
   const updateWatching = async (ep = episode, s = season) => {
-    await axios.post(
-      `${api}/lists/updateWatching`,
-      {
-        listId,
-        itemId: item.id,
-        watching: { episode: ep, season: s },
-        itemType: "tv",
-      },
-      { withCredentials: true }
+    handleShowEditor(false);
+
+    const [prevEp, prevSeason] = [episode, season];
+
+    setEpisode(ep);
+    setSeason(s);
+    setCurrSeasonEP(
+      item.seasons.find((season) => season.season_number === s)
+        ?.episode_count || 0
     );
+    try {
+      await axios.post(
+        `${api}/lists/updateWatching`,
+        {
+          listId,
+          itemId: item.id,
+          watching: { episode: ep, season: s },
+          itemType: "tv",
+        },
+        { withCredentials: true }
+      );
+      item.watching = { episode: ep, season: s };
+      toast.success("Watch status updated");
+    } catch (error) {
+      console.error("Error updating watch status:", error);
+      toast.error("Failed to update watch status");
+
+      setEpisode(prevEp);
+      setSeason(prevSeason);
+      setCurrSeasonEP(
+        item.seasons.find((season) => season.season_number === prevSeason)
+          ?.episode_count || 0
+      );
+    }
   };
 
   const handleNextEP = async () => {
@@ -212,34 +270,53 @@ function ShowBox({
     });
   };
 
+  const handleShowEditor = (open: boolean) => {
+    setOpen(open);
+  };
+
   return (
     <div className={`relative group ${className}`}>
-      <div className="absolute inset-0 flex flex-col items-center justify-start group-hover:opacity-100 opacity-0 transition-all duration-300">
-        <div className="mt-[50%] -translate-y-[50%] flex flex-row justify-around w-full">
-          <Button
-            className="ml-2 bg-background/50 w-1 h-auto hover:bg-background/70 text-foreground mix-blend-lighter"
-            onClick={handlePrevEP}
-          >
-            -
-          </Button>
-          <Button
-            className="mr-2 bg-background/50 w-1 h-auto hover:bg-background/70 text-foreground mix-blend-lighter"
-            onClick={handleNextEP}
-          >
-            +
-          </Button>
-        </div>
-        <Button
-          className="relative top-[15%] -translate-y-[50%] text-xs w-3/5 h-6 bg-red-600/50 hover:bg-red-800/70 text-background mix-blend-lighter"
-          onClick={() => handleRemoveItem(item.id)}
-        >
-          remove
-        </Button>
-      </div>
-      <img
-        src={item.poster_path}
-        className="aspect-[2/3] object-cover rounded-md opacity-100"
-      />
+      {isMobile ? (
+        <Drawer open={open} onOpenChange={setOpen}>
+          <DrawerTrigger asChild>
+            <img
+              src={item.poster_path}
+              className="aspect-[2/3] object-cover rounded-md opacity-100"
+            />
+          </DrawerTrigger>
+          {open && (
+            <ShowEditor
+              showDetails={item}
+              listId={listId}
+              handleRemoveItem={() => {
+                handleRemoveItem(item.id);
+                handleShowEditor(false);
+              }}
+              handleOK={updateWatching}
+            />
+          )}
+        </Drawer>
+      ) : (
+        <Dialog open={open} onOpenChange={setOpen}>
+          <DialogTrigger asChild>
+            <img
+              src={item.poster_path}
+              className="aspect-[2/3] object-cover rounded-md opacity-100"
+            />
+          </DialogTrigger>
+          {open && (
+            <ShowEditor
+              showDetails={item}
+              listId={listId}
+              handleRemoveItem={() => {
+                handleRemoveItem(item.id);
+                handleShowEditor(false);
+              }}
+              handleOK={updateWatching}
+            />
+          )}
+        </Dialog>
+      )}
 
       <div className="flex items-center text-center flex-col">
         <p className="text-sm font-bold pb-0 w-full truncate">{item.name}</p>
@@ -250,6 +327,453 @@ function ShowBox({
         </p>
       </div>
     </div>
+  );
+}
+
+function ShowEditor({
+  showDetails,
+  handleRemoveItem,
+  handleOK,
+}: {
+  showDetails: TVType;
+  listId: String;
+  handleRemoveItem: () => void;
+  handleOK: (episode: number, season: number) => void;
+}) {
+  const isMobile = useIsMobile();
+  const [currEpisode, setCurrEpisode] = useState(
+    showDetails.watching?.episode || 1
+  );
+  const [currSeason, setCurrSeason] = useState(
+    showDetails.watching?.season || 1
+  );
+  const [currEpisodeDetails, setCurrEpisodeDetails] =
+    useState<EpisodeType | null>(null);
+  const [maxEpiInSeason, setMaxEpiInSeason] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
+
+  async function fetchEpisodeDetails() {
+    setIsLoading(true);
+    try {
+      const episodeDetails = await axios.get(`${api}/details/tv/episode`, {
+        params: {
+          id: showDetails.id,
+          season: currSeason,
+          episode: currEpisode,
+        },
+        withCredentials: true,
+      });
+      setCurrEpisodeDetails(episodeDetails.data);
+      setMaxEpiInSeason(
+        showDetails.seasons.find((s) => s.season_number === currSeason)
+          ?.episode_count || 0
+      );
+    } catch (error) {
+      console.error("Error fetching episode details:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
+  useEffect(() => {
+    fetchEpisodeDetails();
+  }, []);
+
+  useEffect(() => {
+    if (currEpisode && currSeason) {
+      fetchEpisodeDetails();
+    }
+  }, [currEpisode, currSeason]);
+
+  const [debounceTimer, setDebounceTimer] = useState<NodeJS.Timeout | null>(
+    null
+  );
+
+  const handleNextEP = () => {
+    if (debounceTimer) {
+      clearTimeout(debounceTimer);
+    }
+
+    const timer = setTimeout(() => {
+      setCurrEpisode((currEp) => (currEp !== undefined ? currEp + 1 : 1));
+    }, 150);
+
+    setDebounceTimer(timer);
+  };
+
+  const handlePrevEP = () => {
+    if (debounceTimer) {
+      clearTimeout(debounceTimer);
+    }
+
+    const timer = setTimeout(() => {
+      setCurrEpisode((currEp) => (currEp !== undefined ? currEp - 1 : 1));
+    }, 150);
+
+    setDebounceTimer(timer);
+  };
+
+  return isMobile ? (
+    <DrawerContent>
+      <DrawerHeader>
+        <DrawerTitle>{showDetails.name}</DrawerTitle>
+        <div className="flex flex-row gap-2 justify-center">
+          {showDetails.genres.map((genre) => (
+            <div className="bg-foreground text-background rounded-md p-1 text-xs">
+              {genre.name}
+            </div>
+          ))}
+        </div>
+      </DrawerHeader>
+      <DrawerDescription className="w-11/12 mx-auto">
+        <p className="line-clamp-3">{showDetails.overview}</p>
+        <div className="flex flex-row items-center justify-center my-4 text-white">
+          Currently on: Season{" "}
+          <span className="font-bold mx-2">{currSeason}</span>Episode{" "}
+          <span className="font-bold mx-2">{currEpisode}</span>
+        </div>
+        {isLoading ? (
+          <>
+            <div className="flex flex-row justify-between">
+              <Skeleton className="w-3/5 rounded-md h-6" />
+              <Skeleton className="w-32 rounded-md h-4" />
+            </div>
+            <Skeleton className="w-full mt-2 rounded-md h-9 mb-1" />
+            <Skeleton className="w-3/5 mt-1 rounded-md h-[8.25rem] mx-auto" />
+          </>
+        ) : (
+          <>
+            <div className="flex flex-row justify-between">
+              <p className="text-lg font-bold text-white">
+                {currEpisodeDetails?.name}
+              </p>
+              <p className="text-xs">Released {currEpisodeDetails?.air_date}</p>
+            </div>
+            <p className="line-clamp-2 mb-1">{currEpisodeDetails?.overview}</p>
+            {currEpisodeDetails?.still_path != null ? (
+              <img
+                src={currEpisodeDetails?.still_path}
+                className="w-3/5 object-cover rounded-md shadow-lg overflow-hidden mx-auto"
+                alt={currEpisodeDetails?.name}
+              />
+            ) : (
+              <div className="w-3/5 h-56 bg-gray-700 rounded-md shadow-lg overflow-hidden mx-auto"></div>
+            )}
+          </>
+        )}
+      </DrawerDescription>
+      <DrawerFooter>
+        <div className="flex flex-col w-full gap-4">
+          <div className="flex flex-row justify-between w-full gap-4">
+            <Select
+              value={currSeason.toString()}
+              onValueChange={(value) => {
+                const newSeason = parseInt(value);
+                setCurrSeason(newSeason);
+                setCurrEpisode(1); // Reset to episode 1 when changing seasons
+                setMaxEpiInSeason(
+                  showDetails.seasons.find((s) => s.season_number === newSeason)
+                    ?.episode_count || 0
+                );
+              }}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Select Season" />
+              </SelectTrigger>
+              <SelectContent>
+                {showDetails.seasons
+                  .filter((season) => season.season_number > 0) // Filter out specials (season 0)
+                  .map((season) => (
+                    <SelectItem
+                      key={season.id}
+                      value={season.season_number.toString()}
+                    >
+                      {season.name}
+                    </SelectItem>
+                  ))}
+              </SelectContent>
+            </Select>
+
+            <Select
+              value={currEpisode.toString()}
+              onValueChange={(value) => setCurrEpisode(parseInt(value))}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Select Episode" />
+              </SelectTrigger>
+              <SelectContent>
+                {Array.from({ length: maxEpiInSeason }, (_, i) => i + 1).map(
+                  (ep) => (
+                    <SelectItem key={ep} value={ep.toString()}>
+                      Episode {ep}
+                    </SelectItem>
+                  )
+                )}
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="flex flex-row justify-between w-full">
+            <Button
+              variant="outline"
+              onClick={handlePrevEP}
+              className="text-xs"
+            >
+              - Episode
+            </Button>
+            <Button
+              variant="outline"
+              onClick={handleNextEP}
+              className="text-xs"
+            >
+              + Episode
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={handleRemoveItem}
+              className="text-xs"
+            >
+              Remove from List
+            </Button>
+            <Button
+              variant="outline"
+              onClick={() => handleOK(currEpisode || 1, currSeason || 1)}
+              className="text-xs"
+            >
+              OK
+            </Button>
+          </div>
+        </div>
+      </DrawerFooter>
+    </DrawerContent>
+  ) : (
+    <DialogContent>
+      <DialogHeader>
+        <DialogTitle className="text-center text-2xl">
+          {showDetails.name}
+        </DialogTitle>
+        <div className="flex flex-row gap-2 justify-center">
+          {showDetails.genres.map((genre) => (
+            <div className="bg-foreground text-background rounded-md p-1 text-xs">
+              {genre.name}
+            </div>
+          ))}
+        </div>
+      </DialogHeader>
+      <DialogDescription>
+        <p className="line-clamp-3">{showDetails.overview}</p>
+        <div className="flex flex-row items-center justify-center my-4 text-white">
+          Currently on: Season{" "}
+          <span className="font-bold mx-2">{currSeason}</span>Episode{" "}
+          <span className="font-bold mx-2">{currEpisode}</span>
+        </div>
+        {isLoading ? (
+          <>
+            <div className="flex flex-row justify-between">
+              <Skeleton className="w-3/5 rounded-md h-6" />
+              <Skeleton className="w-32 rounded-md h-4" />
+            </div>
+            <Skeleton className="w-full mt-1 rounded-md h-10" />
+            <Skeleton className="w-full mt-4 rounded-md mx-auto h-56" />
+          </>
+        ) : (
+          <>
+            <div className="flex flex-row justify-between">
+              <p className="text-lg font-bold text-white">
+                {currEpisodeDetails?.name}
+              </p>
+              <p className="text-xs">Released {currEpisodeDetails?.air_date}</p>
+            </div>
+            <p className="line-clamp-2">{currEpisodeDetails?.overview}</p>
+            <img
+              src={currEpisodeDetails?.still_path}
+              className="mt-4 w-full h-56 object-cover rounded-md shadow-lg aspect-[16/9]"
+              alt={currEpisodeDetails?.name}
+            />
+          </>
+        )}
+      </DialogDescription>
+      <DialogFooter>
+        <div className="flex flex-col w-full gap-4">
+          <div className="flex flex-row justify-between w-full gap-4">
+            <Select
+              value={currSeason.toString()}
+              onValueChange={(value) => {
+                const newSeason = parseInt(value);
+                setCurrSeason(newSeason);
+                setCurrEpisode(1); // Reset to episode 1 when changing seasons
+                setMaxEpiInSeason(
+                  showDetails.seasons.find((s) => s.season_number === newSeason)
+                    ?.episode_count || 0
+                );
+              }}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Select Season" />
+              </SelectTrigger>
+              <SelectContent>
+                {showDetails.seasons
+                  .filter((season) => season.season_number > 0) // Filter out specials (season 0)
+                  .map((season) => (
+                    <SelectItem
+                      key={season.id}
+                      value={season.season_number.toString()}
+                    >
+                      {season.name}
+                    </SelectItem>
+                  ))}
+              </SelectContent>
+            </Select>
+
+            <Select
+              value={currEpisode.toString()}
+              onValueChange={(value) => setCurrEpisode(parseInt(value))}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Select Episode" />
+              </SelectTrigger>
+              <SelectContent>
+                {Array.from({ length: maxEpiInSeason }, (_, i) => i + 1).map(
+                  (ep) => (
+                    <SelectItem key={ep} value={ep.toString()}>
+                      Episode {ep}
+                    </SelectItem>
+                  )
+                )}
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="flex flex-row justify-between w-full">
+            <Button variant="outline" onClick={handlePrevEP}>
+              - Episode
+            </Button>
+            <Button variant="outline" onClick={handleNextEP}>
+              + Episode
+            </Button>
+            <Button variant="destructive" onClick={handleRemoveItem}>
+              Remove from List
+            </Button>
+            <Button
+              variant="outline"
+              onClick={() => handleOK(currEpisode || 1, currSeason || 1)}
+            >
+              OK
+            </Button>
+          </div>
+        </div>
+      </DialogFooter>
+    </DialogContent>
+  );
+}
+
+function MovieEditor({
+  movieDetails,
+  handleRemoveItem,
+  handleOK,
+}: {
+  movieDetails: MovieType;
+  handleRemoveItem: () => void;
+  handleOK: (watched: boolean) => void;
+}) {
+  const isMobile = useIsMobile();
+  const [open, setOpen] = useState(false);
+  const [watched, setWatched] = useState(
+    movieDetails.watching?.watched || false
+  );
+  console.log(movieDetails);
+
+  return isMobile ? (
+    <DrawerContent>
+      <DrawerHeader>
+        <DrawerTitle className="text-center">{movieDetails.title}</DrawerTitle>
+        <div className="flex flex-row gap-2 justify-center">
+          {movieDetails.genres.map((genre) => (
+            <div className="bg-foreground text-background rounded-md p-1 text-xs">
+              {genre.name}
+            </div>
+          ))}
+        </div>
+      </DrawerHeader>
+      <DrawerDescription>
+        <p className="line-clamp-3">{movieDetails.overview}</p>
+        <div className="flex flex-row items-center justify-center my-4 text-white">
+          {movieDetails.watching?.watched ? "Watched" : "Not Watched"}
+        </div>
+        <img
+          src={movieDetails.poster_path}
+          className="w-2/5 object-cover rounded-md shadow-lg overflow-hidden mx-auto"
+          alt={movieDetails.title}
+        />
+      </DrawerDescription>
+      <DrawerFooter>
+        <Button variant="destructive" onClick={handleRemoveItem}>
+          Remove from List
+        </Button>
+      </DrawerFooter>
+    </DrawerContent>
+  ) : (
+    <DialogContent>
+      <DialogHeader>
+        <DialogTitle className="text-center">{movieDetails.title}</DialogTitle>
+        <div className="flex flex-row gap-2 justify-center">
+          {movieDetails.genres.map((genre) => (
+            <div className="bg-foreground text-background rounded-md p-1 text-xs">
+              {genre.name}
+            </div>
+          ))}
+        </div>
+      </DialogHeader>
+      <DialogDescription>
+        <div className="flex flex-row gap-4">
+          <img
+            src={movieDetails.poster_path}
+            className="w-2/5 object-cover rounded-md shadow-lg overflow-hidden mx-auto"
+            alt={movieDetails.title}
+          />
+          <p className="line-clamp-[10] w-11/12">{movieDetails.overview}</p>
+        </div>
+        <div className="flex flex-row items-center justify-center my-4 text-white">
+          {movieDetails.watching?.watched ? "Watched" : "Not Watched"}
+        </div>
+        <div className="flex flex-row items-center justify-around my-4">
+          <p className="text-xs">
+            {movieDetails.revenue.toLocaleString("en-US", {
+              style: "currency",
+              currency: "USD",
+            })}{" "}
+            revenue
+          </p>
+          <p className="text-xs">
+            {movieDetails.budget.toLocaleString("en-US", {
+              style: "currency",
+              currency: "USD",
+            })}{" "}
+            budget
+          </p>
+        </div>
+        <div className="flex flex-row items-center justify-between my-4">
+          <p className="text-xs">Released {movieDetails.release_date}</p>
+          <p className="text-xs">
+            Rating {movieDetails.vote_average.toFixed(1)} -{" "}
+            {movieDetails.vote_count} votes
+          </p>
+          <p className="text-xs">Runtime {movieDetails.runtime} minutes</p>
+        </div>
+      </DialogDescription>
+      <DialogFooter>
+        <Button variant="destructive" onClick={handleRemoveItem}>
+          Remove from List
+        </Button>
+        {watched ? (
+          <Button variant="outline" onClick={() => handleOK(false)}>
+            Unwatch
+          </Button>
+        ) : (
+          <Button variant="outline" onClick={() => handleOK(true)}>
+            Watch
+          </Button>
+        )}
+      </DialogFooter>
+    </DialogContent>
   );
 }
 
@@ -421,7 +945,7 @@ function ListTitle({
       ) : (
         <Drawer open={open} onOpenChange={setOpen}>
           <DrawerTrigger asChild>
-            <Button variant="outline" className="w-full mb-4 truncate">
+            <Button variant="outline" className="w-64 mb-4 truncate">
               {listTitle}
             </Button>
           </DrawerTrigger>
@@ -509,18 +1033,6 @@ function List({}: Props) {
 
   useEffect(() => {
     getLists();
-    if (lists.length > 0) {
-      const storedOpenStates: Record<number, boolean> = {};
-
-      lists.forEach((list, index) => {
-        const storedState = localStorage.getItem(`list_${list.listId}_open`);
-        if (storedState !== null) {
-          storedOpenStates[index] = JSON.parse(storedState);
-        }
-      });
-
-      setOpenStates(storedOpenStates);
-    }
 
     const intervalId = setInterval(() => {
       getLists();
@@ -531,11 +1043,28 @@ function List({}: Props) {
     };
   }, []);
 
-  async function getLists() {
-    const response = await axios.get(`${api}/lists/`, {
-      withCredentials: true,
+  function getOpenStates(lists: List[]) {
+    const storedOpenStates: Record<number, boolean> = {};
+
+    lists.forEach((list, index) => {
+      const storedState = localStorage.getItem(`list_${list.listId}_open`);
+      if (storedState !== null) {
+        storedOpenStates[index] = JSON.parse(storedState);
+      }
     });
-    setLists(response.data);
+
+    return storedOpenStates;
+  }
+
+  async function getLists() {
+    await axios
+      .get(`${api}/lists/`, {
+        withCredentials: true,
+      })
+      .then((res) => {
+        setLists(res.data);
+        setOpenStates(getOpenStates(res.data));
+      });
   }
 
   const toggleList = (index: number, listId: string) => {
@@ -566,6 +1095,7 @@ function List({}: Props) {
       setListOpen(false);
       setNewListName("");
       await getLists();
+      toast.success("List created successfully!");
     } catch (error) {
       console.error("Error creating list:", error);
       return null;
@@ -577,15 +1107,32 @@ function List({}: Props) {
     itemId: number,
     itemType: string
   ) => {
+    const prevList = lists;
+
+    const keyName = (itemId + itemType).toString();
+    setLists((prevLists) =>
+      prevLists.map((list) => {
+        if (list.listId === listId) {
+          const newItems = { ...list.items };
+          delete newItems[keyName as keyof typeof newItems];
+
+          return {
+            ...list,
+            items: newItems,
+          };
+        }
+        return list;
+      })
+    );
     try {
       await axios.post(
         `${api}/lists/removeItem`,
         { listId, itemId, itemType },
         { withCredentials: true }
       );
-      await getLists();
       toast.success("Item removed from list");
     } catch (error) {
+      setLists(prevList);
       toast.error("Error removing item from list");
     }
   };
@@ -652,7 +1199,6 @@ function List({}: Props) {
               className="flex flex-col items-center w-full"
               key={list.listId}
             >
-              <div className="w-[25rem]" />
               <ListTitle
                 title={list.name}
                 users={list.users}
@@ -673,7 +1219,7 @@ function List({}: Props) {
                 </Button>
               </div>
               <div className="w-full ">
-                <div className="grid sm:grid-cols-6 grid-cols-3 gap-4">
+                <div className="grid 2xl:grid-cols-10 lg:grid-cols-6 sm:grid-cols-6 grid-cols-3 gap-4">
                   {isOpen &&
                     Object.entries(list.items).map(([_id, item]) => {
                       return "seasons" in item ? (
