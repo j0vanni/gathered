@@ -297,7 +297,6 @@ function ShowEditor({
   const [maxEpiInSeason, setMaxEpiInSeason] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
 
-  console.log(showDetails);
   async function fetchEpisodeDetails() {
     const loadingTimer = setTimeout(() => {
       setIsLoading(true);
@@ -317,7 +316,6 @@ function ShowEditor({
         showDetails.seasons.find((s) => s.season_number === currSeason)
           ?.episode_count || 0
       );
-      console.log(episodeDetails.data);
     } catch (error) {
       console.error("Error fetching episode details:", error);
     } finally {
@@ -643,7 +641,6 @@ function MovieEditor({
 }) {
   const isMobile = useIsMobile();
   const watched = movieDetails.watching?.watched || false;
-  console.log(movieDetails);
 
   return isMobile ? (
     <DrawerContent>
@@ -660,16 +657,18 @@ function MovieEditor({
           ))}
         </div>
       </DrawerHeader>
-      <DrawerDescription>
-        <p className="line-clamp-3">{movieDetails.overview}</p>
+      <DrawerDescription className="w-11/12 mx-auto">
+        <div className="flex flex-row w-full gap-4">
+          <img
+            src={movieDetails.poster_path}
+            className="w-2/5 object-cover rounded-md shadow-lg overflow-hidden mx-auto"
+            alt={movieDetails.title}
+          />
+          <p className="line-clamp-[10] w-11/12">{movieDetails.overview}</p>
+        </div>
         <div className="flex flex-row items-center justify-center my-4 text-white">
           {movieDetails.watching?.watched ? "Watched" : "Not Watched"}
         </div>
-        <img
-          src={movieDetails.poster_path}
-          className="w-2/5 object-cover rounded-md shadow-lg overflow-hidden mx-auto"
-          alt={movieDetails.title}
-        />
       </DrawerDescription>
       <DrawerFooter>
         <Button variant="destructive" onClick={handleRemoveItem}>
@@ -837,7 +836,6 @@ function ListTitle({
       await getLists();
       toast.success("User added to list");
     } catch (error) {
-      console.log(error);
       toast.error("Error adding user to list");
     }
   };
