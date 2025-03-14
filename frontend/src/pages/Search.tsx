@@ -492,8 +492,11 @@ function SearchItem({
 
   if (isMobile) {
     return (
-      <Drawer open={loadedDetails} onOpenChange={setOpen}>
-        <DrawerTrigger className="w-full text-left">
+      <Drawer open={open} onOpenChange={setOpen}>
+        <DrawerTrigger
+          className="w-full text-left"
+          onClick={() => setOpen(true)}
+        >
           {item.media_type === "tv" ? (
             <ShowItem {...(item as ResultsShow)} />
           ) : (
@@ -530,7 +533,7 @@ function SearchItem({
   } else {
     return (
       <Dialog
-        open={loadedDetails}
+        open={open}
         onOpenChange={(isOpen) => {
           if (!isOpen) {
             handleClose();
