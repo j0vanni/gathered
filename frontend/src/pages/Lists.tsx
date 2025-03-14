@@ -297,6 +297,7 @@ function ShowEditor({
   const [maxEpiInSeason, setMaxEpiInSeason] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
 
+  console.log(showDetails);
   async function fetchEpisodeDetails() {
     const loadingTimer = setTimeout(() => {
       setIsLoading(true);
@@ -316,6 +317,7 @@ function ShowEditor({
         showDetails.seasons.find((s) => s.season_number === currSeason)
           ?.episode_count || 0
       );
+      console.log(episodeDetails.data);
     } catch (error) {
       console.error("Error fetching episode details:", error);
     } finally {
@@ -344,7 +346,12 @@ function ShowEditor({
     }
 
     const timer = setTimeout(() => {
-      setCurrEpisode((currEp) => (currEp !== undefined ? currEp + 1 : 1));
+      setCurrEpisode((currEp) => {
+        if (currEp !== undefined && currEp < maxEpiInSeason) {
+          return currEp + 1;
+        }
+        return currEp || 1;
+      });
     }, 150);
 
     setDebounceTimer(timer);
@@ -356,7 +363,12 @@ function ShowEditor({
     }
 
     const timer = setTimeout(() => {
-      setCurrEpisode((currEp) => (currEp !== undefined ? currEp - 1 : 1));
+      setCurrEpisode((currEp) => {
+        if (currEp !== undefined && currEp > 1) {
+          return currEp - 1;
+        }
+        return currEp || 1;
+      });
     }, 150);
 
     setDebounceTimer(timer);
