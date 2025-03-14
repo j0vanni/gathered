@@ -437,6 +437,7 @@ function SearchItem({
   const [selectedListId, setSelectedListId] = useState<string | null>(null);
   const [details, setDetails] = useState<any>(null);
   const [loadedDetails, setLoadedDetails] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleAddToList = () => {
     if (selectedListId) {
@@ -454,32 +455,35 @@ function SearchItem({
     setDetails(null);
   };
 
-  useEffect(() => {
-    if (open) {
-      const fetchDetails = async () => {
-        try {
-          const url =
-            item.media_type === "tv"
-              ? `${api}/details/tv?id=${item.id}`
-              : `${api}/details/movie?id=${item.id}`;
-          const response = await axios.get(url, {
-            withCredentials: true,
-          });
-          setDetails(response.data);
-          setLoadedDetails(true);
-        } catch (error) {
-          console.error("Error fetching details:", error);
-        }
-      };
-      fetchDetails();
-    } else {
-      setDetails(null);
+  const handleOpen = async () => {
+    setIsLoading(true);
+    setOpen(true);
+    try {
+      const url =
+        item.media_type === "tv"
+          ? `${api}/details/tv?id=${item.id}`
+          : `${api}/details/movie?id=${item.id}`;
+      const response = await axios.get(url, {
+        withCredentials: true,
+      });
+      setDetails(response.data);
+      setLoadedDetails(true);
+    } catch (error) {
+      console.error("Error fetching details:", error);
+      toast.error("Failed to load details");
+      setOpen(false);
+    } finally {
+      setIsLoading(false);
     }
-  }, [open, item.id, item.media_type]);
+  };
 
   const renderDetails = () => {
-    if (!loadedDetails) {
-      return null;
+    if (isLoading) {
+      return (
+        <div className="flex justify-center items-center p-8">
+          <div className="animate-spin h-8 w-8 border-4 border-primary border-t-transparent rounded-full"></div>
+        </div>
+      );
     } else if (details && loadedDetails) {
       return item.media_type === "tv" ? (
         <TVAlert {...details} />
@@ -492,11 +496,15 @@ function SearchItem({
 
   if (isMobile) {
     return (
-      <Drawer open={open} onOpenChange={setOpen}>
-        <DrawerTrigger
-          className="w-full text-left"
-          onClick={() => setOpen(true)}
-        >
+      <Drawer
+        open={open}
+        onOpenChange={(isOpen) => {
+          if (!isOpen) {
+            handleClose();
+          }
+        }}
+      >
+        <DrawerTrigger className="w-full text-left" onClick={handleOpen}>
           {item.media_type === "tv" ? (
             <ShowItem {...(item as ResultsShow)} />
           ) : (
@@ -505,28 +513,30 @@ function SearchItem({
         </DrawerTrigger>
         <DrawerContent className="w-full rounded-md">
           {renderDetails()}
-          <DrawerFooter className="flex flex-row items-center gap-1">
-            <Select onValueChange={setSelectedListId}>
-              <SelectTrigger className="w-full mr-auto truncate">
-                <SelectValue placeholder="Choose a List" />
-              </SelectTrigger>
-              <SelectContent>
-                {lists.map((item) => {
-                  return (
-                    <SelectItem key={item.listId} value={item.listId}>
-                      {item.name}
-                    </SelectItem>
-                  );
-                })}
-              </SelectContent>
-            </Select>
-            <DrawerClose>
-              <Button variant="outline" onClick={handleClose}>
-                Cancel
-              </Button>
-            </DrawerClose>
-            <Button onClick={handleAddToList}>Add to List</Button>
-          </DrawerFooter>
+          {loadedDetails && (
+            <DrawerFooter className="flex flex-row items-center gap-1">
+              <Select onValueChange={setSelectedListId}>
+                <SelectTrigger className="w-full mr-auto truncate">
+                  <SelectValue placeholder="Choose a List" />
+                </SelectTrigger>
+                <SelectContent>
+                  {lists.map((item) => {
+                    return (
+                      <SelectItem key={item.listId} value={item.listId}>
+                        {item.name}
+                      </SelectItem>
+                    );
+                  })}
+                </SelectContent>
+              </Select>
+              <DrawerClose>
+                <Button variant="outline" onClick={handleClose}>
+                  Cancel
+                </Button>
+              </DrawerClose>
+              <Button onClick={handleAddToList}>Add to List</Button>
+            </DrawerFooter>
+          )}
         </DrawerContent>
       </Drawer>
     );
@@ -541,7 +551,7 @@ function SearchItem({
           setOpen(isOpen);
         }}
       >
-        <DialogTrigger className="w-full text-left">
+        <DialogTrigger className="w-full text-left" onClick={handleOpen}>
           {item.media_type === "tv" ? (
             <ShowItem {...(item as ResultsShow)} />
           ) : (
@@ -550,28 +560,30 @@ function SearchItem({
         </DialogTrigger>
         <DialogContent className="w-full rounded-md [&>button]:hidden">
           {renderDetails()}
-          <DialogFooter className="flex flex-row items-center gap-1">
-            <Select onValueChange={setSelectedListId}>
-              <SelectTrigger className="w-full mr-auto truncate">
-                <SelectValue placeholder="Choose a List" />
-              </SelectTrigger>
-              <SelectContent>
-                {lists.map((item) => {
-                  return (
-                    <SelectItem key={item.listId} value={item.listId}>
-                      {item.name}
-                    </SelectItem>
-                  );
-                })}
-              </SelectContent>
-            </Select>
-            <DialogClose>
-              <Button variant="outline" onClick={handleClose}>
-                Cancel
-              </Button>
-            </DialogClose>
-            <Button onClick={handleAddToList}>Add to List</Button>
-          </DialogFooter>
+          {loadedDetails && (
+            <DialogFooter className="flex flex-row items-center gap-1">
+              <Select onValueChange={setSelectedListId}>
+                <SelectTrigger className="w-full mr-auto truncate">
+                  <SelectValue placeholder="Choose a List" />
+                </SelectTrigger>
+                <SelectContent>
+                  {lists.map((item) => {
+                    return (
+                      <SelectItem key={item.listId} value={item.listId}>
+                        {item.name}
+                      </SelectItem>
+                    );
+                  })}
+                </SelectContent>
+              </Select>
+              <DialogClose>
+                <Button variant="outline" onClick={handleClose}>
+                  Cancel
+                </Button>
+              </DialogClose>
+              <Button onClick={handleAddToList}>Add to List</Button>
+            </DialogFooter>
+          )}
         </DialogContent>
       </Dialog>
     );
