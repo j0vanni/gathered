@@ -298,7 +298,9 @@ function ShowEditor({
   const [isLoading, setIsLoading] = useState(false);
 
   async function fetchEpisodeDetails() {
-    setIsLoading(true);
+    const loadingTimer = setTimeout(() => {
+      setIsLoading(true);
+    }, 300);
     try {
       const episodeDetails = await axios.get(`${api}/details/tv/episode`, {
         params: {
@@ -308,6 +310,7 @@ function ShowEditor({
         },
         withCredentials: true,
       });
+      clearTimeout(loadingTimer);
       setCurrEpisodeDetails(episodeDetails.data);
       setMaxEpiInSeason(
         showDetails.seasons.find((s) => s.season_number === currSeason)
@@ -316,6 +319,7 @@ function ShowEditor({
     } catch (error) {
       console.error("Error fetching episode details:", error);
     } finally {
+      clearTimeout(loadingTimer);
       setIsLoading(false);
     }
   }
@@ -362,9 +366,12 @@ function ShowEditor({
     <DrawerContent>
       <DrawerHeader>
         <DrawerTitle>{showDetails.name}</DrawerTitle>
-        <div className="flex flex-row gap-2 justify-center">
+        <div className="flex flex-row flex-wrap gap-2 justify-center">
           {showDetails.genres.map((genre) => (
-            <div className="bg-foreground text-background rounded-md p-1 text-xs">
+            <div
+              key={genre.id}
+              className="bg-foreground text-background rounded-md p-1 text-xs h-6 truncate"
+            >
               {genre.name}
             </div>
           ))}
@@ -415,7 +422,7 @@ function ShowEditor({
               onValueChange={(value) => {
                 const newSeason = parseInt(value);
                 setCurrSeason(newSeason);
-                setCurrEpisode(1); // Reset to episode 1 when changing seasons
+                setCurrEpisode(1);
                 setMaxEpiInSeason(
                   showDetails.seasons.find((s) => s.season_number === newSeason)
                     ?.episode_count || 0
@@ -427,7 +434,7 @@ function ShowEditor({
               </SelectTrigger>
               <SelectContent>
                 {showDetails.seasons
-                  .filter((season) => season.season_number > 0) // Filter out specials (season 0)
+                  .filter((season) => season.season_number > 0)
                   .map((season) => (
                     <SelectItem
                       key={season.id}
@@ -496,9 +503,12 @@ function ShowEditor({
         <DialogTitle className="text-center text-2xl">
           {showDetails.name}
         </DialogTitle>
-        <div className="flex flex-row gap-2 justify-center">
+        <div className="flex flex-row flex-wrap gap-2 justify-center">
           {showDetails.genres.map((genre) => (
-            <div className="bg-foreground text-background rounded-md p-1 text-xs">
+            <div
+              key={genre.id}
+              className="bg-foreground text-background rounded-md p-1 h-6 text-xs truncate"
+            >
               {genre.name}
             </div>
           ))}
@@ -545,7 +555,7 @@ function ShowEditor({
               onValueChange={(value) => {
                 const newSeason = parseInt(value);
                 setCurrSeason(newSeason);
-                setCurrEpisode(1); // Reset to episode 1 when changing seasons
+                setCurrEpisode(1);
                 setMaxEpiInSeason(
                   showDetails.seasons.find((s) => s.season_number === newSeason)
                     ?.episode_count || 0
@@ -557,7 +567,7 @@ function ShowEditor({
               </SelectTrigger>
               <SelectContent>
                 {showDetails.seasons
-                  .filter((season) => season.season_number > 0) // Filter out specials (season 0)
+                  .filter((season) => season.season_number > 0)
                   .map((season) => (
                     <SelectItem
                       key={season.id}
@@ -627,9 +637,12 @@ function MovieEditor({
     <DrawerContent>
       <DrawerHeader>
         <DrawerTitle className="text-center">{movieDetails.title}</DrawerTitle>
-        <div className="flex flex-row gap-2 justify-center">
+        <div className="flex flex-row flex-wrap gap-2 justify-center">
           {movieDetails.genres.map((genre) => (
-            <div className="bg-foreground text-background rounded-md p-1 text-xs">
+            <div
+              key={genre.id}
+              className="bg-foreground text-background rounded-md p-1 text-xs h-6 truncate"
+            >
               {genre.name}
             </div>
           ))}
@@ -656,9 +669,12 @@ function MovieEditor({
     <DialogContent>
       <DialogHeader>
         <DialogTitle className="text-center">{movieDetails.title}</DialogTitle>
-        <div className="flex flex-row gap-2 justify-center">
+        <div className="flex flex-row flex-wrap gap-2 justify-center">
           {movieDetails.genres.map((genre) => (
-            <div className="bg-foreground text-background rounded-md p-1 text-xs">
+            <div
+              key={genre.id}
+              className="bg-foreground text-background rounded-md p-1 text-xs h-6 truncate"
+            >
               {genre.name}
             </div>
           ))}
