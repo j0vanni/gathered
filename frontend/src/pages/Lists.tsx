@@ -670,10 +670,19 @@ function MovieEditor({
           {movieDetails.watching?.watched ? "Watched" : "Not Watched"}
         </div>
       </DrawerDescription>
-      <DrawerFooter>
+      <DrawerFooter className="flex flex-row justify-between">
         <Button variant="destructive" onClick={handleRemoveItem}>
           Remove from List
         </Button>
+        {watched ? (
+          <Button variant="outline" onClick={() => handleOK(false)}>
+            Unwatch
+          </Button>
+        ) : (
+          <Button variant="outline" onClick={() => handleOK(true)}>
+            Watch
+          </Button>
+        )}
       </DrawerFooter>
     </DrawerContent>
   ) : (
