@@ -183,14 +183,7 @@ function ShowBox({
 
   const [episode, setEpisode] = useState(item.watching.episode);
   const [season, setSeason] = useState(item.watching.season);
-  const [currSeasonEP, setCurrSeasonEP] = useState(
-    item.seasons.find((s) => s.season_number === season)?.episode_count || 0
-  );
   const [open, setOpen] = useState(false);
-  const maxSeason = item.seasons.reduce(
-    (max, s) => Math.max(max, s.season_number),
-    0
-  );
   const isMobile = useIsMobile();
 
   const updateWatching = async (ep = episode, s = season) => {
@@ -200,10 +193,6 @@ function ShowBox({
 
     setEpisode(ep);
     setSeason(s);
-    setCurrSeasonEP(
-      item.seasons.find((season) => season.season_number === s)
-        ?.episode_count || 0
-    );
     try {
       await axios.post(
         `${api}/lists/updateWatching`,
@@ -223,51 +212,7 @@ function ShowBox({
 
       setEpisode(prevEp);
       setSeason(prevSeason);
-      setCurrSeasonEP(
-        item.seasons.find((season) => season.season_number === prevSeason)
-          ?.episode_count || 0
-      );
     }
-  };
-
-  const handleNextEP = async () => {
-    setEpisode((prevEp) => {
-      if (prevEp + 1 > currSeasonEP) {
-        if (season + 1 > maxSeason) {
-          toast.error("No more seasons");
-          return prevEp;
-        } else {
-          setSeason(season + 1);
-          setCurrSeasonEP(item.seasons[season].episode_count);
-          updateWatching(1, season + 1);
-          return 1;
-        }
-      } else {
-        updateWatching(prevEp + 1, season);
-        return prevEp + 1;
-      }
-    });
-  };
-
-  const handlePrevEP = async () => {
-    setEpisode((prevEp) => {
-      if (prevEp - 1 > 0) {
-        updateWatching(prevEp - 1, season);
-        return prevEp - 1;
-      } else if (season > 1 && prevEp == 1) {
-        const prevSeason = season - 1;
-        const prevSeasonEpisodeCount =
-          item.seasons.find((s) => s.season_number === prevSeason)
-            ?.episode_count || 0;
-
-        setSeason(prevSeason);
-        setCurrSeasonEP(prevSeasonEpisodeCount);
-        updateWatching(prevSeasonEpisodeCount, prevSeason);
-        return prevSeasonEpisodeCount;
-      } else {
-        return prevEp;
-      }
-    });
   };
 
   const handleShowEditor = (open: boolean) => {
@@ -512,7 +457,7 @@ function ShowEditor({
               </SelectContent>
             </Select>
           </div>
-          <div className="flex flex-row justify-between w-full">
+          <div className="flex flex-row justify-between">
             <Button
               variant="outline"
               onClick={handlePrevEP}
@@ -675,10 +620,7 @@ function MovieEditor({
   handleOK: (watched: boolean) => void;
 }) {
   const isMobile = useIsMobile();
-  const [open, setOpen] = useState(false);
-  const [watched, setWatched] = useState(
-    movieDetails.watching?.watched || false
-  );
+  const watched = movieDetails.watching?.watched || false;
   console.log(movieDetails);
 
   return isMobile ? (
