@@ -2,9 +2,9 @@ import { Route, Routes } from "react-router";
 import "./index.css";
 import Layout from "./layout";
 import Account from "./pages/Account";
-import Lists from "./pages/Lists";
+import Lists from "./pages/List/Lists";
 import Login from "./pages/Login";
-import Search from "./pages/Search";
+import Search from "./pages/Search/Search";
 import { useTheme } from "./useTheme";
 import ProtectedRoutes from "./utils/ProtectedRoutes";
 
