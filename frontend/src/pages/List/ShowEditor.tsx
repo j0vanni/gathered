@@ -29,6 +29,7 @@ import api from "@/globals";
 import { EpisodeType } from "@/types/EpisodeType";
 import axios from "axios";
 import { useEffect } from "react";
+import { Separator } from "@radix-ui/react-separator";
 
 function ShowEditor({
   showDetails,
@@ -128,14 +129,17 @@ function ShowEditor({
   };
 
   return isMobile ? (
-    <DrawerContent>
+    <DrawerContent className="bg-muted border-border">
+      <Separator className="w-2/5 h-0.5 mx-auto bg-border bottom-2 relative" />
       <DrawerHeader>
-        <DrawerTitle>{showDetails.name}</DrawerTitle>
+        <DrawerTitle className="text-foreground">
+          {showDetails.name}
+        </DrawerTitle>
         <div className="flex flex-row flex-wrap gap-2 justify-center">
           {showDetails.genres.map((genre) => (
             <div
               key={genre.id}
-              className="bg-foreground text-background rounded-md p-1 text-xs h-6 truncate"
+              className="bg-primary/70 text-foreground rounded-md p-1 text-xs h-6 truncate"
             >
               {genre.name}
             </div>
@@ -143,8 +147,8 @@ function ShowEditor({
         </div>
       </DrawerHeader>
       <DrawerDescription className="w-11/12 mx-auto">
-        <p className="line-clamp-3">{showDetails.overview}</p>
-        <div className="flex flex-row items-center justify-center my-4 text-white">
+        <p className="line-clamp-3 text-foreground">{showDetails.overview}</p>
+        <div className="flex flex-row items-center justify-center my-4 text-foreground">
           Currently on: Season{" "}
           <span className="font-bold mx-2">{currSeason}</span>Episode{" "}
           <span className="font-bold mx-2">{currEpisode}</span>
@@ -161,20 +165,24 @@ function ShowEditor({
         ) : (
           <>
             <div className="flex flex-row justify-between">
-              <p className="text-lg font-bold text-white">
+              <p className="text-lg font-bold text-foreground">
                 {currEpisodeDetails?.name}
               </p>
-              <p className="text-xs">Released {currEpisodeDetails?.air_date}</p>
+              <p className="text-xs text-foreground">
+                Released {currEpisodeDetails?.air_date}
+              </p>
             </div>
-            <p className="line-clamp-2 mb-1">{currEpisodeDetails?.overview}</p>
+            <p className="line-clamp-2 mb-1 text-foreground">
+              {currEpisodeDetails?.overview}
+            </p>
             {currEpisodeDetails?.still_path != null ? (
               <img
                 src={currEpisodeDetails?.still_path}
-                className="w-3/5 object-cover rounded-md shadow-lg overflow-hidden mx-auto"
+                className="w-3/5 object-cover rounded-md shadow-lg overflow-hidden mx-auto aspect-2/3"
                 alt={currEpisodeDetails?.name}
               />
             ) : (
-              <div className="w-3/5 h-56 bg-gray-700 rounded-md shadow-lg overflow-hidden mx-auto"></div>
+              <div className="w-3/5 h-56 bg-gray-700 rounded-md shadow-lg overflow-hidden mx-auto aspect-2/3"></div>
             )}
           </>
         )}
@@ -197,13 +205,14 @@ function ShowEditor({
               <SelectTrigger>
                 <SelectValue placeholder="Select Season" />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className="bg-muted-foreground">
                 {showDetails.seasons
                   .filter((season) => season.season_number > 0)
                   .map((season) => (
                     <SelectItem
                       key={season.id}
                       value={season.season_number.toString()}
+                      className="text-foreground/70"
                     >
                       {season.name}
                     </SelectItem>
@@ -218,10 +227,14 @@ function ShowEditor({
               <SelectTrigger>
                 <SelectValue placeholder="Select Episode" />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className="bg-muted-foreground">
                 {Array.from({ length: maxEpiInSeason }, (_, i) => i + 1).map(
                   (ep) => (
-                    <SelectItem key={ep} value={ep.toString()}>
+                    <SelectItem
+                      key={ep}
+                      value={ep.toString()}
+                      className="text-foreground/70"
+                    >
                       Episode {ep}
                     </SelectItem>
                   )
@@ -233,28 +246,28 @@ function ShowEditor({
             <Button
               variant="outline"
               onClick={handlePrevEP}
-              className="text-xs"
+              className="text-xs border-border"
             >
               - Episode
             </Button>
             <Button
               variant="outline"
               onClick={handleNextEP}
-              className="text-xs"
+              className="text-xs border-border"
             >
               + Episode
             </Button>
             <Button
               variant="destructive"
               onClick={handleRemoveItem}
-              className="text-xs"
+              className="text-xs  bg-error/70 hover:bg-error/80"
             >
               Remove from List
             </Button>
             <Button
               variant="outline"
               onClick={() => handleOK(currEpisode || 1, currSeason || 1)}
-              className="text-xs"
+              className="text-xs border-border"
             >
               OK
             </Button>
@@ -263,16 +276,16 @@ function ShowEditor({
       </DrawerFooter>
     </DrawerContent>
   ) : (
-    <DialogContent>
+    <DialogContent className="bg-muted">
       <DialogHeader>
-        <DialogTitle className="text-center text-2xl">
+        <DialogTitle className="text-center text-2xl text-foreground">
           {showDetails.name}
         </DialogTitle>
         <div className="flex flex-row flex-wrap gap-2 justify-center">
           {showDetails.genres.map((genre) => (
             <div
               key={genre.id}
-              className="bg-foreground text-background rounded-md p-1 h-6 text-xs truncate"
+              className="bg-primary/70 text-foreground rounded-md p-1 h-6 text-xs truncate"
             >
               {genre.name}
             </div>
@@ -280,8 +293,8 @@ function ShowEditor({
         </div>
       </DialogHeader>
       <DialogDescription>
-        <p className="line-clamp-3">{showDetails.overview}</p>
-        <div className="flex flex-row items-center justify-center my-4 text-white">
+        <p className="line-clamp-3 text-foreground">{showDetails.overview}</p>
+        <div className="flex flex-row items-center justify-center my-4 text-foreground">
           Currently on: Season{" "}
           <span className="font-bold mx-2">{currSeason}</span>Episode{" "}
           <span className="font-bold mx-2">{currEpisode}</span>
@@ -298,12 +311,16 @@ function ShowEditor({
         ) : (
           <>
             <div className="flex flex-row justify-between">
-              <p className="text-lg font-bold text-white">
+              <p className="text-lg font-bold text-foreground">
                 {currEpisodeDetails?.name}
               </p>
-              <p className="text-xs">Released {currEpisodeDetails?.air_date}</p>
+              <p className="text-xs text-foreground">
+                Released {currEpisodeDetails?.air_date}
+              </p>
             </div>
-            <p className="line-clamp-2">{currEpisodeDetails?.overview}</p>
+            <p className="line-clamp-2 text-foreground">
+              {currEpisodeDetails?.overview}
+            </p>
             <img
               src={currEpisodeDetails?.still_path}
               className="mt-4 w-full h-56 object-cover rounded-md shadow-lg aspect-[16/9]"
@@ -330,13 +347,14 @@ function ShowEditor({
               <SelectTrigger>
                 <SelectValue placeholder="Select Season" />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className="bg-muted-foreground">
                 {showDetails.seasons
                   .filter((season) => season.season_number > 0)
                   .map((season) => (
                     <SelectItem
                       key={season.id}
                       value={season.season_number.toString()}
+                      className="text-foreground/70"
                     >
                       {season.name}
                     </SelectItem>
@@ -351,10 +369,14 @@ function ShowEditor({
               <SelectTrigger>
                 <SelectValue placeholder="Select Episode" />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className="bg-muted-foreground">
                 {Array.from({ length: maxEpiInSeason }, (_, i) => i + 1).map(
                   (ep) => (
-                    <SelectItem key={ep} value={ep.toString()}>
+                    <SelectItem
+                      key={ep}
+                      value={ep.toString()}
+                      className="text-foreground/70"
+                    >
                       Episode {ep}
                     </SelectItem>
                   )
@@ -363,18 +385,31 @@ function ShowEditor({
             </Select>
           </div>
           <div className="flex flex-row justify-between w-full">
-            <Button variant="outline" onClick={handlePrevEP}>
+            <Button
+              variant="outline"
+              onClick={handlePrevEP}
+              className="border-border"
+            >
               - Episode
             </Button>
-            <Button variant="outline" onClick={handleNextEP}>
+            <Button
+              variant="outline"
+              onClick={handleNextEP}
+              className="border-border"
+            >
               + Episode
             </Button>
-            <Button variant="destructive" onClick={handleRemoveItem}>
+            <Button
+              variant="destructive"
+              onClick={handleRemoveItem}
+              className="bg-error/70 hover:bg-error/80"
+            >
               Remove from List
             </Button>
             <Button
               variant="outline"
               onClick={() => handleOK(currEpisode || 1, currSeason || 1)}
+              className="border-border"
             >
               OK
             </Button>

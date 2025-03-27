@@ -148,7 +148,7 @@ function Search({}: Props) {
     <>
       <div className="bg-background w-full">
         <SearchBar
-          className="sticky top-0 bg-background z-10"
+          className="sticky top-0 z-10"
           value={query}
           onChange={setQuery}
           onSubmit={handleSearch}

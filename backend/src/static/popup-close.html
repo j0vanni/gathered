@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Closing...</title>
+  </head>
+  <body>
+    <script>
+      // Signal the main window that authentication was successful
+      if (window.opener) {
+        window.opener.postMessage("google-auth-success", "*");
+      }
+      // Close the popup
+      window.close();
+    </script>
+  </body>
+</html>

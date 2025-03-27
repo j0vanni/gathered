@@ -26,22 +26,24 @@ function TVAlert(tvDetails: TVType) {
         <DrawerTitle>
           <div className="flex flex-row">
             <p className="uppercase">{tvDetails.name}</p>
-            <p className="ml-auto text-xs text-black/50">{tvDetails.status}</p>
+            <p className="ml-auto text-xs text-foreground/70">
+              {tvDetails.status}
+            </p>
           </div>
         </DrawerTitle>
         <DrawerDescription>
           <div className="flex flex-row gap-x-1">
             {tvDetails.genres.map((gen) => {
               return (
-                <div className="bg-foreground text-background rounded-md p-1 text-xs">
+                <div className="bg-primary/70 text-foreground rounded-md p-1 text-xs">
                   {gen.name}
                 </div>
               );
             })}
           </div>
-          <p className="mt-2">{tvDetails.overview}</p>
+          <p className="mt-2 text-foreground">{tvDetails.overview}</p>
           <Accordion type="single" collapsible>
-            <AccordionItem value="seasons">
+            <AccordionItem value="seasons" className="text-foreground/70">
               <AccordionTrigger>
                 {tvDetails.number_of_seasons} Seasons
               </AccordionTrigger>
@@ -65,22 +67,24 @@ function TVAlert(tvDetails: TVType) {
         <DialogTitle>
           <div className="flex flex-row">
             <p className="uppercase">{tvDetails.name}</p>
-            <p className="ml-auto text-xs text-black/50">{tvDetails.status}</p>
+            <p className="ml-auto text-xs text-foreground/70">
+              {tvDetails.status}
+            </p>
           </div>
         </DialogTitle>
         <DialogDescription>
           <div className="flex flex-row gap-x-1">
             {tvDetails.genres.map((gen) => {
               return (
-                <div className="bg-foreground text-background rounded-md p-1 text-xs">
+                <div className="bg-primary/70 text-foreground rounded-md p-1 text-xs">
                   {gen.name}
                 </div>
               );
             })}
           </div>
-          <p className="mt-2">{tvDetails.overview}</p>
+          <p className="mt-2 text-foreground">{tvDetails.overview}</p>
           <Accordion type="single" collapsible>
-            <AccordionItem value="seasons">
+            <AccordionItem value="seasons" className="text-foreground/70">
               <AccordionTrigger>
                 {tvDetails.number_of_seasons} Seasons
               </AccordionTrigger>

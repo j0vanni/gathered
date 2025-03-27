@@ -136,7 +136,7 @@ function SearchItem({
                 <SelectTrigger className="w-full mr-auto truncate">
                   <SelectValue placeholder="Choose a List" />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="bg-muted-foreground text-foreground/70">
                   {lists.map((item) => {
                     return (
                       <SelectItem key={item.listId} value={item.listId}>
@@ -183,7 +183,7 @@ function SearchItem({
                 <SelectTrigger className="w-full mr-auto truncate">
                   <SelectValue placeholder="Choose a List" />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="bg-muted-foreground text-foreground/70">
                   {lists.map((item) => {
                     return (
                       <SelectItem key={item.listId} value={item.listId}>

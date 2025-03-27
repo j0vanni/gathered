@@ -1,25 +1,26 @@
 import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
   Sidebar,
   SidebarContent,
+  SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
   SidebarGroupLabel,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  SidebarFooter,
 } from "@/components/ui/sidebar";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { ChevronUp, User2 } from "lucide-react";
-import { ScrollText, Search } from "lucide-react";
-import { Link } from "react-router";
-import axios from "axios";
 import api from "@/globals";
+import useAuth from "@/useAuth";
+import axios from "axios";
+import { ChevronUp, ScrollText, Search, User2 } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Link } from "react-router";
 
 const items = [
   {
@@ -43,16 +44,31 @@ export function AppSidebar() {
     window.location.href = "/";
   };
 
+  const { user } = useAuth();
+  const [name, setName] = useState("User");
+
+  useEffect(() => {
+    if ((user as any)?.displayName) {
+      setName((user as any).displayName);
+    }
+  }, [user]);
+
   return (
     <Sidebar>
-      <SidebarContent>
+      <SidebarContent className="bg-muted">
         <SidebarGroup>
-          <SidebarGroupLabel>Gathered</SidebarGroupLabel>
+          <SidebarGroupLabel className="text-foreground">
+            Gathered
+          </SidebarGroupLabel>
         </SidebarGroup>
         <SidebarGroupContent>
           <SidebarMenu>
             {items.map((item) => (
-              <SidebarMenuItem key={item.title}>
+              <SidebarMenuItem
+                key={item.title}
+                className="text-foreground"
+                color="text-foreground"
+              >
                 <SidebarMenuButton asChild>
                   <a href={item.url}>
                     <item.icon />
@@ -70,13 +86,13 @@ export function AppSidebar() {
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <SidebarMenuButton>
-                  <User2 /> Username
+                  <User2 /> <span>{name}</span>
                   <ChevronUp className="ml-auto" />
                 </SidebarMenuButton>
               </DropdownMenuTrigger>
               <DropdownMenuContent
                 side="top"
-                className="w-[--radix-popper-anchor-width]"
+                className="w-[--radix-popper-anchor-width] bg-muted-foreground"
               >
                 <DropdownMenuItem asChild>
                   <Link to="/account">

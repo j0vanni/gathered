@@ -95,8 +95,8 @@ function MovieBox({
         <p className="text-sm font-bold pb-0 w-full truncate">{item.title}</p>
 
         <p
-          className={`flex justify-center my-2 w-full text-xs transition-all duration-300 text-white rounded-md mt-0 ${
-            didWatch ? "bg-green-600" : "bg-red-600"
+          className={`flex justify-center my-2 w-full text-xs transition-all duration-300 text-foreground rounded-md mt-0 ${
+            didWatch ? "bg-success" : "bg-error"
           }`}
         >
           {didWatch ? "watched" : "unwatched"}

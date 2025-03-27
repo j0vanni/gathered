@@ -20,7 +20,7 @@ googleCallback = (req, res) => {
     maxAge: 24 * 7 * 60 * 60 * 1000, // 1 week in milliseconds
     expires: new Date(Date.now() + 24 * 7 * 60 * 60 * 1000),
   });
-  res.redirect(`${process.env.URL}/lists`);
+  res.redirect(`${process.env.URL}/auth/popup-close.html`);
 };
 
 verifyToken = (req, res, next) => {
@@ -72,17 +72,14 @@ saveColors = async (req, res) => {
     foreground,
     primary,
     secondary,
+    highlight,
     muted,
-    accent,
-    card,
+    mutedForeground,
     border,
-    sidebarBackground,
-    sidebarForeground,
-    sidebarPrimary,
-    sidebarPrimaryForeground,
-    sidebarAccent,
-    sidebarAccentForeground,
-    sidebarBorder,
+    info,
+    success,
+    warning,
+    error,
   } = req.body;
   const user = req.user;
   try {
@@ -91,17 +88,14 @@ saveColors = async (req, res) => {
       foreground,
       primary,
       secondary,
+      highlight,
       muted,
-      accent,
-      card,
+      mutedForeground,
       border,
-      sidebarBackground,
-      sidebarForeground,
-      sidebarPrimary,
-      sidebarPrimaryForeground,
-      sidebarAccent,
-      sidebarAccentForeground,
-      sidebarBorder,
+      info,
+      success,
+      warning,
+      error,
     });
     return res.status(200).json({ message: "success" });
   } catch (error) {

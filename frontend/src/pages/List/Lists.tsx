@@ -175,29 +175,40 @@ function List({}: Props) {
 
   return (
     <div className="flex flex-col items-center w-full p-4 gap-4 mx-auto">
-      <Input placeholder="Search for a list"></Input>
+      {/* <Input placeholder="Search for a list"></Input> */}
       {isMobile ? (
         <Drawer open={listOpen} onOpenChange={setListOpen}>
           <DrawerTrigger asChild>
-            <Button>Create a List</Button>
+            <Button className="bg-primary/70 hover:bg-primary/80">
+              Create a List
+            </Button>
           </DrawerTrigger>
-          <DrawerContent>
+          <DrawerContent className="bg-muted">
             <DrawerHeader>
-              <DrawerTitle>Create a List</DrawerTitle>
+              <DrawerTitle className="text-foreground">
+                Create a List
+              </DrawerTitle>
             </DrawerHeader>
             <DrawerDescription>
               <Input
                 placeholder="List Name"
                 value={newListName}
                 onChange={(e) => setNewListName(e.target.value)}
-                className="w-11/12 mx-auto"
+                className="w-11/12 mx-auto border-border"
               />
             </DrawerDescription>
             <DrawerFooter>
               <DrawerClose asChild>
-                <Button variant="outline">Cancel</Button>
+                <Button variant="outline" className="border-border">
+                  Cancel
+                </Button>
               </DrawerClose>
-              <Button onClick={handleSubmit}>Submit</Button>
+              <Button
+                onClick={handleSubmit}
+                className="bg-primary/70 hover:bg-primary/80"
+              >
+                Submit
+              </Button>
             </DrawerFooter>
           </DrawerContent>
         </Drawer>
@@ -206,22 +217,32 @@ function List({}: Props) {
           <DialogTrigger asChild>
             <Button>Create a List</Button>
           </DialogTrigger>
-          <DialogContent>
+          <DialogContent className="bg-muted">
             <DialogHeader>
-              <DialogTitle>Create a List</DialogTitle>
+              <DialogTitle className="text-foreground">
+                Create a List
+              </DialogTitle>
               <DialogDescription>
                 <Input
                   placeholder="List Name"
                   value={newListName}
                   onChange={(e) => setNewListName(e.target.value)}
+                  className="border-border placeholder:text-muted-foreground"
                 />
               </DialogDescription>
             </DialogHeader>
             <DialogFooter>
               <DialogClose asChild>
-                <Button variant="outline">Cancel</Button>
+                <Button variant="outline" className="border-border">
+                  Cancel
+                </Button>
               </DialogClose>
-              <Button onClick={handleSubmit}>Submit</Button>
+              <Button
+                onClick={handleSubmit}
+                className="bg-primary/70 hover:bg-primary/80"
+              >
+                Submit
+              </Button>
             </DialogFooter>
           </DialogContent>
         </Dialog>

@@ -10,6 +10,7 @@ import api from "@/globals";
 import useAuth from "@/useAuth";
 import { useEffect } from "react";
 import { useNavigate } from "react-router";
+import { toast } from "sonner";
 
 function Login() {
   const { user, loading } = useAuth();
@@ -21,21 +22,31 @@ function Login() {
     }
   }, [user, loading, navigate]);
 
-  const handleGoogleLogin = () => {
-    window.location.href = `${api}/auth/google`;
-    // fetch(`${api}/auth/google`, { method: "GET", credentials: "include" })
-    //   .then((response) => {
-    //     if (response.status === 200) {
-    //       navigate("/lists");
-    //     } else {
-    //       window.location.href = `${api}/auth/google`;
-    //     }
-    //   })
-    //   .catch((error) => {
-    //     console.error("Authentication error:", error);
-    //     window.location.href = `${api}/auth/google`;
-    //   });
-  };
+  function handleGoogleLogin() {
+    const width = 500;
+    const height = 600;
+    const left = (window.innerWidth - width) / 2;
+    const top = (window.innerHeight - height) / 2;
+
+    const popup = window.open(
+      `${api}/auth/google`,
+      "googleLogin",
+      `width=${width},height=${height},top=${top},left=${left}`
+    );
+
+    if (!popup || popup.closed || typeof popup.closed === "undefined") {
+      toast.error("Please allow popups for this website");
+    }
+
+    const handleMessage = (event: MessageEvent) => {
+      if (event.data === "google-auth-success") {
+        window.removeEventListener("message", handleMessage);
+        window.location.href = "/lists";
+      }
+    };
+
+    window.addEventListener("message", handleMessage, false);
+  }
 
   return (
     <div className="flex items-center justify-center min-h-screen">
@@ -79,7 +90,7 @@ function Login() {
                 strokeWidth="2"
                 strokeLinecap="round"
                 strokeLinejoin="round"
-                className="h-12 w-12 text-primary m-1 opacity-80"
+                className="h-12 w-12 text-primary dark:text-foreground m-1 opacity-80"
               >
                 <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                 <circle cx="12" cy="7" r="4"></circle>

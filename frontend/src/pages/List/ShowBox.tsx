@@ -108,7 +108,7 @@ function ShowBox({
       <div className="flex items-center text-center flex-col">
         <p className="text-sm font-bold pb-0 w-full truncate">{item.name}</p>
         <p
-          className={`flex justify-center my-2 w-full text-xs text-white rounded-md bg-blue-400 mt-0`}
+          className={`flex justify-center my-2 w-full text-xs transition-all duration-300 text-foreground rounded-md mt-0 bg-info`}
         >
           S{season} EP{episode}
         </p>

@@ -139,16 +139,24 @@ function ListTitle({
       {!isMobile ? (
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild className="mb-4 w-11/12">
-            <Button variant="outline" className="w-64 truncate">
+            <Button variant="outline" className="w-64 truncate border-border">
               {listTitle}
             </Button>
           </DialogTrigger>
-          <DialogContent className="sm:max-w-[425px]">
+          <DialogContent className="bg-muted sm:max-w-[425px]">
             <DialogHeader className="flex flex-col items-center">
-              <DialogTitle className="mt-2 mb-4">Edit List</DialogTitle>
-              <Input value={name} onChange={(e) => setName(e.target.value)} />
+              <DialogTitle className="mt-2 mb-4 text-foreground">
+                Edit List
+              </DialogTitle>
+              <Input
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                className="border-border placeholder:text-foreground/70 text-foreground"
+              />
               <Separator className="my-2 w-1/2" />
-              <div className="text-sm font-bold text-center">Users in List</div>
+              <div className="text-sm font-bold text-center text-foreground">
+                Users in List
+              </div>
               <ScrollArea className="w-[375px] whitespace-nowrap rounded-md">
                 <div className="flex w-max space-x-2 p-2">
                   {users.map((item, index) => {
@@ -180,45 +188,75 @@ function ListTitle({
               </ScrollArea>
 
               <div className="flex w-11/12 flex-col items-center justify-center">
-                <h1>Add User</h1>
-                <div className=" w-full flex-row flex">
+                <h1 className="text-foreground">Add User</h1>
+                <div className="w-full flex-row flex gap-4">
                   <Input
-                    placeholder="Enter user to add's email"
+                    placeholder="Enter user's email to add"
                     value={addUserEmail}
                     onChange={(e) => setAddUserEmail(e.target.value)}
+                    className="border-border placeholder:text-foreground/70"
                   />
-                  <Button onClick={handleAddUserToList}>Add</Button>
+                  <Button
+                    onClick={handleAddUserToList}
+                    className="bg-primary/70 hover:bg-primary/80"
+                  >
+                    Add
+                  </Button>
                 </div>
               </div>
             </DialogHeader>
             <DialogFooter className="mt-4">
-              <Button variant="destructive" onClick={handleDeleteList}>
+              <Button
+                variant="destructive"
+                onClick={handleDeleteList}
+                className="bg-error/70 hover:bg-error/80"
+              >
                 Delete List
               </Button>
               <DialogClose asChild>
-                <Button variant="outline" onClick={handleCancel}>
+                <Button
+                  variant="outline"
+                  onClick={handleCancel}
+                  className="border-border"
+                >
                   Cancel
                 </Button>
               </DialogClose>
-              <Button onClick={handleSubmitList}>Submit</Button>
+              <Button
+                onClick={handleSubmitList}
+                className="bg-primary/70 hover:bg-primary/80"
+              >
+                Submit
+              </Button>
             </DialogFooter>
           </DialogContent>
         </Dialog>
       ) : (
         <Drawer open={open} onOpenChange={setOpen}>
           <DrawerTrigger asChild>
-            <Button variant="outline" className="w-64 mb-4 truncate">
+            <Button
+              variant="outline"
+              className="w-64 mb-4 truncate border-border"
+            >
               {listTitle}
             </Button>
           </DrawerTrigger>
-          <DrawerContent>
+          <DrawerContent className="bg-muted">
             <DrawerHeader className="flex flex-col items-center">
-              <DrawerTitle className="mt-2 mb-4">Edit List</DrawerTitle>
-              <Input value={name} onChange={(e) => setName(e.target.value)} />
+              <DrawerTitle className="mt-2 mb-4 text-foreground">
+                Edit List
+              </DrawerTitle>
+              <Input
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                className="border-border"
+              />
               <Separator className="my-2 w-1/2" />
             </DrawerHeader>
             <div className="flex flex-col items-center">
-              <div className="text-sm font-bold text-center">Users in List</div>
+              <div className="text-sm font-bold text-center text-foreground">
+                Users in List
+              </div>
               <ScrollArea className="w-10/12 whitespace-nowrap rounded-md">
                 <div className="flex w-full space-x-2 p-2">
                   {users.map((item) => (
@@ -248,28 +286,47 @@ function ListTitle({
               </ScrollArea>
 
               <div className="flex w-11/12 flex-col items-center justify-center">
-                <h1>Add User</h1>
-                <div className=" w-full flex-row flex">
+                <h1 className="text-foreground">Add User</h1>
+                <div className="w-full flex-row flex gap-4">
                   <Input
-                    placeholder="Enter user to add's email"
+                    placeholder="Enter user's email to add"
                     value={addUserEmail}
                     onChange={(e) => setAddUserEmail(e.target.value)}
+                    className="border-border placeholder:text-foreground/70"
                   />
-                  <Button onClick={handleAddUserToList}>Add</Button>
+                  <Button
+                    onClick={handleAddUserToList}
+                    className="bg-primary/70 hover:bg-primary/80"
+                  >
+                    Add
+                  </Button>
                 </div>
               </div>
             </div>
             <DrawerFooter className="pt-6">
-              <Button variant="destructive" onClick={handleDeleteList}>
+              <Button
+                variant="destructive"
+                onClick={handleDeleteList}
+                className="bg-error/70 hover:bg-error/80"
+              >
                 Delete List
               </Button>
 
               <DrawerClose asChild>
-                <Button variant="outline" onClick={handleCancel}>
+                <Button
+                  variant="outline"
+                  onClick={handleCancel}
+                  className="border-border"
+                >
                   Cancel
                 </Button>
               </DrawerClose>
-              <Button onClick={handleSubmitList}>Submit</Button>
+              <Button
+                onClick={handleSubmitList}
+                className="bg-primary/70 hover:bg-primary/80"
+              >
+                Submit
+              </Button>
             </DrawerFooter>
           </DrawerContent>
         </Drawer>

@@ -15,6 +15,21 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { toast } from "sonner";
 
+interface ThemeColors {
+  background: string;
+  foreground: string;
+  primary: string;
+  secondary: string;
+  highlight: string;
+  muted: string;
+  mutedForeground: string;
+  border: string;
+  info: string;
+  success: string;
+  warning: string;
+  error: string;
+}
+
 function Account() {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
@@ -28,32 +43,36 @@ function Account() {
   const root = document.documentElement;
   const style = getComputedStyle(root);
 
+  const defaultTheme: ThemeColors = {
+    background: "#121212",
+    foreground: "#E0E0E0",
+    primary: "#1E1E1E",
+    secondary: "#2C2C2C",
+    highlight: "#BB86FC",
+    muted: "#2A2A2A",
+    mutedForeground: "#B0B0B0",
+    border: "#333333",
+    info: "#64B5F6",
+    success: "#4CAF50",
+    warning: "#FFC107",
+    error: "#CF6679",
+  };
+
   const [themeColors, setThemeColors] = useState({
     background: hslToHex(style.getPropertyValue("--background").trim()),
     foreground: hslToHex(style.getPropertyValue("--foreground").trim()),
     primary: hslToHex(style.getPropertyValue("--primary").trim()),
     secondary: hslToHex(style.getPropertyValue("--secondary").trim()),
+    highlight: hslToHex(style.getPropertyValue("--highlight").trim()),
     muted: hslToHex(style.getPropertyValue("--muted").trim()),
-    accent: hslToHex(style.getPropertyValue("--accent").trim()),
-    card: hslToHex(style.getPropertyValue("--card").trim()),
+    mutedForeground: hslToHex(
+      style.getPropertyValue("--muted-foreground").trim()
+    ),
     border: hslToHex(style.getPropertyValue("--border").trim()),
-    sidebarBackground: hslToHex(
-      style.getPropertyValue("--sidebar-background").trim()
-    ),
-    sidebarForeground: hslToHex(
-      style.getPropertyValue("--sidebar-foreground").trim()
-    ),
-    sidebarPrimary: hslToHex(
-      style.getPropertyValue("--sidebar-primary").trim()
-    ),
-    sidebarPrimaryForeground: hslToHex(
-      style.getPropertyValue("--sidebar-primary-foreground").trim()
-    ),
-    sidebarAccent: hslToHex(style.getPropertyValue("--sidebar-accent").trim()),
-    sidebarAccentForeground: hslToHex(
-      style.getPropertyValue("--sidebar-accent-foreground").trim()
-    ),
-    sidebarBorder: hslToHex(style.getPropertyValue("--sidebar-border").trim()),
+    info: hslToHex(style.getPropertyValue("--info").trim()),
+    success: hslToHex(style.getPropertyValue("--success").trim()),
+    warning: hslToHex(style.getPropertyValue("--warning").trim()),
+    error: hslToHex(style.getPropertyValue("--error").trim()),
   });
 
   useEffect(() => {
@@ -115,10 +134,66 @@ function Account() {
       });
   }, []);
 
-  const handleColorChange = (property: string, value: string) => {
-    setThemeColors((prev) => ({ ...prev, [property]: value }));
-    const hslValue = hexToHSL(value);
-    document.documentElement.style.setProperty(`--${property}`, hslValue);
+  // const handleColorChange = (property: string, value: string) => {
+  //   setThemeColors((prev) => ({ ...prev, [property]: value }));
+  //   const hslValue = hexToHSL(value);
+  //   document.documentElement.style.setProperty(`--${property}`, hslValue);
+  // };
+
+  const deriveColorsFromBackground = (backgroundColor: string) => {
+    const bgHSL = hexToHSL(backgroundColor);
+    const [h, s, l] = bgHSL
+      .split(" ")
+      .map((val) => parseFloat(val.replace("%", "")));
+
+    const primaryLightness =
+      l < 50 ? Math.min(l + 20, 100) : Math.max(l - 20, 0);
+    const secondaryLightness =
+      l < 50 ? Math.min(l + 25, 100) : Math.max(l - 25, 0);
+    const mutedLightness = l < 50 ? Math.min(l + 15, 60) : Math.max(l - 20, 15);
+    const mutedSaturation = Math.max(s - 50, 0);
+
+    const colors = {
+      background: backgroundColor,
+      foreground: l > 50 ? "#000000" : "#ffffff",
+      primary: `#${hslToHex(
+        `${h} ${Math.min(s + 10, 100)}% ${primaryLightness}%`
+      ).substring(1)}`,
+      secondary: `#${hslToHex(
+        `${(h + 10) % 360} ${Math.min(s + 5, 100)}% ${secondaryLightness}%`
+      ).substring(1)}`,
+      highlight: `#${hslToHex(`${h} ${s}% ${Math.min(l + 10, 100)}%`).substring(
+        1
+      )}`,
+      muted: `#${hslToHex(
+        `${h} ${mutedSaturation}% ${mutedLightness}%`
+      ).substring(1)}`,
+      mutedForeground: `#${hslToHex(
+        `${h} ${Math.max(s - 20, 0)}% ${l < 50 ? 30 : 70}%`
+      ).substring(1)}`,
+      border: `#${hslToHex(
+        `${h} ${Math.max(s - 40, 0)}% ${
+          l < 50 ? Math.max(l - 15, 0) : Math.min(l + 15, 100)
+        }%`
+      ).substring(1)}`,
+      info: `#${hslToHex(`210 90% 50%`).substring(1)}`,
+      success: `#${hslToHex(`120 80% 40%`).substring(1)}`,
+      warning: `#${hslToHex(`40 100% 50%`).substring(1)}`,
+      error: `#${hslToHex(`0 90% 50%`).substring(1)}`,
+    };
+
+    setThemeColors(colors);
+  };
+
+  const handleThemeColorChange = (value: string) => {
+    deriveColorsFromBackground(value);
+
+    Object.entries(themeColors).forEach(([key, colorValue]) => {
+      document.documentElement.style.setProperty(
+        `--${key}`,
+        hexToHSL(colorValue)
+      );
+    });
   };
 
   function hslToHex(hsl: string) {
@@ -196,7 +271,19 @@ function Account() {
       withCredentials: true,
     });
 
-    return res.data;
+    const localTheme = localStorage.getItem("userTheme");
+
+    if (localTheme && !JSON.parse(localTheme).sidebarBackground) {
+      const parsedTheme = JSON.parse(localTheme);
+      setThemeColors(parsedTheme);
+      return parsedTheme;
+    }
+
+    if (res.data.sidebarBackground) {
+      return defaultTheme;
+    } else {
+      return res.data;
+    }
   };
 
   useEffect(() => {
@@ -205,6 +292,7 @@ function Account() {
       setName(user.displayName);
       setEmail(user.email);
       setPfp(user.photo);
+      getColors();
     });
   }, []);
 
@@ -224,25 +312,22 @@ function Account() {
         foreground: themeColors.foreground,
         primary: themeColors.primary,
         secondary: themeColors.secondary,
+        highlight: themeColors.highlight,
         muted: themeColors.muted,
-        accent: themeColors.accent,
-        card: themeColors.card,
+        mutedForeground: themeColors.mutedForeground,
         border: themeColors.border,
-        sidebarBackground: themeColors.sidebarBackground,
-        sidebarForeground: themeColors.sidebarForeground,
-        sidebarPrimary: themeColors.sidebarPrimary,
-        sidebarPrimaryForeground: themeColors.sidebarPrimaryForeground,
-        sidebarAccent: themeColors.sidebarAccent,
-        sidebarAccentForeground: themeColors.sidebarAccentForeground,
-        sidebarBorder: themeColors.sidebarBorder,
+        info: themeColors.info,
+        success: themeColors.success,
+        warning: themeColors.warning,
+        error: themeColors.error,
       },
       {
         withCredentials: true,
       }
     );
 
+    localStorage.setItem("userTheme", JSON.stringify(themeColors));
     if (res.status === 200) {
-      localStorage.setItem("userTheme", JSON.stringify(themeColors));
       toast.success("Theme updated");
     } else {
       toast.error("Failed to save theme");
@@ -263,30 +348,39 @@ function Account() {
             {name.slice(0, 2).toUpperCase() || ""}
           </AvatarFallback>
         </Avatar>
-        <h1 className="text-2xl font-bold mt-4">{name}</h1>
-        <h2 className="text-sm text-muted-foreground mb-2">{email}</h2>
+        <h1 className="text-2xl font-bold mt-4 text-primary-secondary">
+          {name}
+        </h1>
+        <h2 className="text-sm text-secondary-foreground mb-2">{email}</h2>
       </div>
 
-      <Card className="mt-8 w-full max-w-md mx-4">
+      <Card className="mt-8 w-full max-w-md mx-4 bg-muted">
         <CardHeader>
           <CardTitle className="text-center">Theme Customization</CardTitle>
         </CardHeader>
         <CardContent className="grid gap-6">
-          <div className="grid grid-cols-2 gap-4">
+          <div className="space-y-2">
+            <Label htmlFor="themeColor" className="capitalize">
+              Theme Color
+            </Label>
+            <div className="relative">
+              <input
+                type="color"
+                id="themeColor"
+                value={themeColors.primary}
+                onChange={(e) => handleThemeColorChange(e.target.value)}
+                className="h-10 w-full cursor-pointer rounded-md border border-input bg-background"
+              />
+            </div>
+          </div>
+          <div className="grid grid-cols-3 gap-4 mt-4">
             {Object.entries(themeColors).map(([key, value]) => (
-              <div key={key} className="space-y-2">
-                <Label htmlFor={key} className="capitalize">
-                  {key}
-                </Label>
-                <div className="relative">
-                  <input
-                    type="color"
-                    id={key}
-                    value={value}
-                    onChange={(e) => handleColorChange(key, e.target.value)}
-                    className="h-10 w-full cursor-pointer rounded-md border border-input bg-background"
-                  />
-                </div>
+              <div key={key} className="flex flex-col items-center">
+                <div
+                  className="w-10 h-10 rounded-full border border-gray-200"
+                  style={{ backgroundColor: value }}
+                />
+                <span className="text-xs mt-1 capitalize">{key}</span>
               </div>
             ))}
           </div>
