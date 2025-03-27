@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Authentication Successful</title>
+    <script>
+      window.onload = function () {
+        window.opener.postMessage("google-auth-success", "*");
+        window.close();
+      };
+    </script>
+  </head>
+  <body>
+    <p>Authentication successful! This window will close automatically.</p>
+  </body>
+</html>
