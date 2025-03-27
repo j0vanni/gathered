@@ -73,17 +73,6 @@ function hexToHSL(hex: string) {
 export const useTheme = () => {
   const [themeColors, setThemeColors] = useState<ThemeColors>(defaultTheme);
 
-  const applyTheme = (colors: ThemeColors) => {
-    const root = document.documentElement;
-    Object.entries(colors).forEach(([key, hex]) => {
-      if (key === "mutedForeground") {
-        root.style.setProperty(`--muted-foreground`, hexToHSL(hex));
-      } else {
-        root.style.setProperty(`--${key}`, hexToHSL(hex));
-      }
-    });
-  };
-
   const checkLogin = async () => {
     try {
       await axios.get(api + "/auth/user", {
@@ -96,6 +85,17 @@ export const useTheme = () => {
     }
   };
 
+  const applyTheme = (colors: ThemeColors) => {
+    const root = document.documentElement;
+    Object.entries(colors).forEach(([key, hex]) => {
+      if (key === "mutedForeground") {
+        root.style.setProperty(`--muted-foreground`, hexToHSL(hex));
+      } else {
+        root.style.setProperty(`--${key}`, hexToHSL(hex));
+      }
+    });
+  };
+
   const getColors = async (): Promise<ThemeColors> => {
     const res = await axios.get(api + "/auth/getColors", {
       withCredentials: true,
@@ -105,15 +105,11 @@ export const useTheme = () => {
   };
 
   useEffect(() => {
+    checkLogin();
     const storedTheme = localStorage.getItem("userTheme");
     if (storedTheme?.includes("sidebarBackground")) {
       applyTheme(defaultTheme);
       setThemeColors(defaultTheme);
-    } else if (storedTheme) {
-      const colors: ThemeColors = JSON.parse(storedTheme);
-      setThemeColors(colors);
-      applyTheme(colors);
-      checkLogin();
     } else {
       getColors()
         .then((colors) => {

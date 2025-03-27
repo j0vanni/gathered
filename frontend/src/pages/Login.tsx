@@ -90,7 +90,7 @@ function Login() {
                 strokeWidth="2"
                 strokeLinecap="round"
                 strokeLinejoin="round"
-                className="h-12 w-12 text-primary dark:text-foreground m-1 opacity-80"
+                className="h-12 w-12 text-foreground dark:text-foreground m-1 opacity-80"
               >
                 <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                 <circle cx="12" cy="7" r="4"></circle>
@@ -99,7 +99,7 @@ function Login() {
           </div>
         </div>
       </div>
-      <Card className="w-[350px]">
+      <Card className="w-[350px] bg-primary">
         <CardHeader className="text-center">
           <CardTitle className="text-2xl">Welcome to Gathered</CardTitle>
           <CardDescription>
@@ -109,7 +109,7 @@ function Login() {
         <CardContent>
           <Button
             variant="outline"
-            className="w-full"
+            className="w-full bg-primary"
             onClick={() => handleGoogleLogin()}
           >
             <svg
