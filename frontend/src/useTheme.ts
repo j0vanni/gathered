@@ -110,6 +110,24 @@ export const useTheme = () => {
     if (storedTheme?.includes("sidebarBackground")) {
       applyTheme(defaultTheme);
       setThemeColors(defaultTheme);
+    } else if (storedTheme) {
+      const colors: ThemeColors = JSON.parse(storedTheme);
+      setThemeColors(colors);
+      applyTheme(colors);
+
+      getColors()
+        .then((colors) => {
+          applyTheme(colors);
+          setThemeColors(colors);
+          localStorage.setItem("userTheme", JSON.stringify(colors));
+        })
+        .catch((err) => {
+          console.error("Error loading theme colors:", err);
+          toast.error("Error loading theme colors");
+          applyTheme(defaultTheme);
+          setThemeColors(defaultTheme);
+          localStorage.removeItem("userTheme");
+        });
     } else {
       getColors()
         .then((colors) => {
